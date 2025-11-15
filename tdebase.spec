@@ -330,6 +330,8 @@ BuildRequires:  pkgconfig(xrandr)
 # XRENDER support
 BuildRequires:  pkgconfig(xrender)
 
+BuildRequires:	pkgconfig(xft)
+
 # XTEST support
 %define with_xtest 1
 
