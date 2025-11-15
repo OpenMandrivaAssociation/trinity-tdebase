@@ -352,8 +352,11 @@ BuildRequires:  pkgconfig(OpenEXR)
 #  RHEL 9: available in EPEL
 
 %define with_xscreensaver 1
+%if %{with_xscreensaver}
 BuildRequires:  pkgconfig(xscrnsaver)
 BuildRequires:  xscreensaver
+BuildRequires:  xscreensaver-base
+%endif
 
 # AVAHI support
 #  Disabled on RHEL4 and RHEL5
@@ -380,6 +383,8 @@ BuildRequires:  pkgconfig(smbclient)
 # samba?
 # BuildOption:    -DCMAKE_INCLUDE_PATH="${CMAKE_INCLUDE_PATH}:%{_includedir}/samba-4.0" 
 
+# Documentation search
+BuildRequires:	hldig
 
 # IMAKE
 BuildRequires:	imake
@@ -3242,9 +3247,7 @@ fi
 %endif
   %{!?with_kbdledsync:-DBUILD_TDEKBDLEDSYNC=OFF} \
   %{!?with_tsak:-DBUILD_TSAK=OFF} \
-%if 0%{?fedora} >= 22 || 0%{?suse_version} >= 1320
-  -DHTDIG_SEARCH_BINARY="/usr/bin/htdig" \
-%endif
+  -DHTDIG_SEARCH_BINARY="%{_bindir}/hldig" \
 %if 0%{?fedora} >= 18 || 0%{?rhel} >= 7 || 0%{?mgaversion} >= 6 || 0%{?mdkver}
   -DBUILD_TDM_SYSTEMD_UNIT_FILE="ON" \
 %endif
