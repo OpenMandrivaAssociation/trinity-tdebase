@@ -354,6 +354,7 @@ BuildRequires:  pkgconfig(OpenEXR)
 %define with_xscreensaver 1
 BuildRequires:  pkgconfig(xscrnsaver)
 BuildRequires:  xscreensaver
+BuildRequires:  xscreensaver-gl
 
 # AVAHI support
 #  Disabled on RHEL4 and RHEL5
@@ -3196,7 +3197,8 @@ fi
   -DSHARE_INSTALL_PREFIX="%{tde_datadir}" \
   -DCONFIG_INSTALL_DIR="%{tde_confdir}" \
   -DSYSCONF_INSTALL_DIR="%{tde_confdir}" \
-  -DXDG_MENU_INSTALL_DIR="%{_sysconfdir}/xdg/menus" \
+  -DXDG_MENU_INSTALL_DIR="%{_sysconfdir}/xdg/menus" \  
+  -DXSCREENSAVER_DIRS="%{_libexecdir}/misc/xscreensaver" \
   \
   -DWITH_ALL_OPTIONS=ON \
   -DWITH_SASL=ON \
