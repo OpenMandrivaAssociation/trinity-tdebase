@@ -7,6 +7,8 @@
 %if "%{?tde_version}" == ""
 %define tde_version 14.1.5
 %endif
+%define pkg_rel 2
+
 %define tde_pkg tdebase
 %define tde_prefix /opt/trinity
 %define tde_bindir %{tde_prefix}/bin
@@ -40,7 +42,7 @@
 
 Name:			trinity-%{tde_pkg}
 Version:		%{tde_version}
-Release:		%{?!preversion:1}%{?preversion:0_%{preversion}}%{?dist}
+Release:		%{?!preversion:%{pkg_rel}}%{?preversion:0_%{preversion}}%{?dist}
 Summary:		Trinity Base Programs
 Group:			System/GUI/Other
 URL:			http://www.trinitydesktop.org/
@@ -3249,7 +3251,11 @@ fi
 %endif
   %{!?with_kbdledsync:-DBUILD_TDEKBDLEDSYNC=OFF} \
   %{!?with_tsak:-DBUILD_TSAK=OFF} \
+%if 0%{?fedora} >= 22 || 0%{?suse_version} >= 1320
+  -DHTDIG_SEARCH_BINARY="/usr/bin/htdig" \
+%else
   -DHTDIG_SEARCH_BINARY="%{_bindir}/hldig" \
+%endif
 %if 0%{?fedora} >= 18 || 0%{?rhel} >= 7 || 0%{?mgaversion} >= 6 || 0%{?mdkver}
   -DBUILD_TDM_SYSTEMD_UNIT_FILE="ON" \
 %endif
@@ -3484,3 +3490,11 @@ chmod 0755 "%{?buildroot}%{tde_tdedocdir}/HTML/en/khelpcenter/glossary/checkxref
 
 # Links duplicate files
 %fdupes "%{?buildroot}%{tde_datadir}"
+
+# fix desktop icon names per XDG spec
+mv %{?buildroot}/%{tde_prefix}/share/apps/kdesktop/Desktop/My_Computer %{buildroot}/%{tde_prefix}/share/apps/kdesktop/Desktop/My_Computer.desktop
+mv %{?buildroot}/%{tde_prefix}/share/apps/kdesktop/Desktop/My_Documents %{buildroot}/%{tde_prefix}/share/apps/kdesktop/Desktop/My_Documents.desktop
+mv %{?buildroot}/%{tde_prefix}/share/apps/kdesktop/Desktop/My_Network_Places %{buildroot}/%{tde_prefix}/share/apps/kdesktop/Desktop/My_Network_Places.desktop
+mv %{?buildroot}/%{tde_prefix}/share/apps/kdesktop/Desktop/Printers %{buildroot}/%{tde_prefix}/share/apps/kdesktop/Desktop/Printers.desktop
+mv %{?buildroot}/%{tde_prefix}/share/apps/kdesktop/Desktop/Trash %{buildroot}/%{tde_prefix}/share/apps/kdesktop/Desktop/Trash.desktop
+mv %{?buildroot}/%{tde_prefix}/share/apps/kdesktop/Desktop/Web_Browser %{buildroot}/%{tde_prefix}/share/apps/kdesktop/Desktop/Web_Browser.desktop
