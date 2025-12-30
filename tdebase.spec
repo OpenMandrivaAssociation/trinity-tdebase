@@ -24,22 +24,6 @@
 %define pkg_rel 3
 
 %define tde_pkg tdebase
-%define tde_prefix /opt/trinity
-%define tde_bindir %{tde_prefix}/bin
-%define tde_confdir %{_sysconfdir}/trinity
-%define tde_datadir %{tde_prefix}/share
-%define tde_docdir %{tde_datadir}/doc
-%define tde_includedir %{tde_prefix}/include
-%define tde_libdir %{tde_prefix}/%{_lib}
-%define tde_mandir %{tde_datadir}/man
-%define tde_tdeappdir %{tde_datadir}/applications/tde
-%define tde_tdedocdir %{tde_docdir}/tde
-%define tde_tdeincludedir %{tde_includedir}/tde
-%define tde_tdelibdir %{tde_libdir}/trinity
-
-%define tdm tdm
-%define tdm_datadir %{tde_datadir}/apps/%{tdm}
-%define starttde starttde
 
 %undefine __brp_remove_la_files
 %define dont_remove_libtool_files 1
@@ -63,7 +47,7 @@ License:		GPLv2+
 #Vendor:			Trinity Desktop
 #Packager:		Francois Andriot <francois.andriot@free.fr>
 
-Prefix:			%{tde_prefix}
+Prefix:			/opt/trinity
 
 Source0:		https://mirror.ppa.trinitydesktop.org/trinity/releases/R%{tde_version}/main/core/%{tarball_name}-%{version}%{?preversion:~%{preversion}}.tar.xz
 Source1:		%{name}-rpmlintrc
@@ -83,20 +67,19 @@ Obsoletes:	tdebase < %{?epoch:%{epoch}:}%{version}-%{release}
 Provides:	tdebase = %{?epoch:%{epoch}:}%{version}-%{release}
 
 BuildSystem:  cmake
+
 BuildOption:  -DCMAKE_BUILD_TYPE="RelWithDebInfo"
 BuildOption:  -DCMAKE_SKIP_RPATH=OFF
 BuildOption:  -DCMAKE_SKIP_INSTALL_RPATH=OFF
 BuildOption:  -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON
-BuildOption:  -DCMAKE_INSTALL_RPATH="%{tde_libdir}"
-BuildOption:  -DCMAKE_NO_BUILTIN_CHRPATH=ON
-BuildOption:  -DWITH_GCC_VISIBILITY=ON
-BuildOption:  -DBIN_INSTALL_DIR="%{tde_bindir}"
-BuildOption:  -DCONFIG_INSTALL_DIR="%{tde_confdir}"
-BuildOption:  -DINCLUDE_INSTALL_DIR="%{tde_tdeincludedir}"
-BuildOption:  -DLIB_INSTALL_DIR="%{tde_libdir}"
-BuildOption:  -DSHARE_INSTALL_PREFIX="%{tde_datadir}"
-BuildOption:  -DCONFIG_INSTALL_DIR="%{tde_confdir}"
-BuildOption:  -DSYSCONF_INSTALL_DIR="%{tde_confdir}"
+BuildOption:  -DCMAKE_INSTALL_RPATH="%{prefix}/%{_lib}"
+BuildOption:  -DBIN_INSTALL_DIR="%{prefix}/bin"
+BuildOption:  -DCONFIG_INSTALL_DIR="%{_sysconfdir}/trinity"
+BuildOption:  -DINCLUDE_INSTALL_DIR="%{prefix}/include/tde"
+BuildOption:  -DLIB_INSTALL_DIR="%{prefix}/%{_lib}"
+BuildOption:  -DSHARE_INSTALL_PREFIX="%{prefix}/share"
+BuildOption:  -DCONFIG_INSTALL_DIR="%{_sysconfdir}/trinity"
+BuildOption:  -DSYSCONF_INSTALL_DIR="%{_sysconfdir}/trinity"
 BuildOption:  -DXDG_MENU_INSTALL_DIR="%{_sysconfdir}/xdg/menus"
 BuildOption:  -DWITH_ALL_OPTIONS=ON -DWITH_SASL=ON -DWITH_LDAP=ON
 BuildOption:  -DWITH_SAMBA=ON -DWITH_XCOMPOSITE=ON -DWITH_XCURSOR=ON
@@ -113,16 +96,17 @@ BuildOption:  -DTDM_PAM_SERVICE="tdm-trinity"
 BuildOption:  -DTDESCREENSAVER_PAM_SERVICE="tdescreensaver-trinity"
 BuildOption:  -DHTDIG_SEARCH_BINARY="%{_bindir}/hldig"
 BuildOption:  -DBUILD_TDM_SYSTEMD_UNIT_FILE="ON"
-%{?!with_openexr:BuildOption:  -DWITH_OPENEXR=OFF} 
-%{?!with_xrandr:BuildOption:  -DWITH_XRANDR=OFF}
-%{?!with_libconfig:BuildOption:  -DWITH_LIBCONFIG=OFF}
-%{?!with_xtest:BuildOption:  -DWITH_XTEST=OFF}
-%{?!with_xscreensaver:BuildOption:  -DWITH_XSCREENSAVER=OFF}
-%{?!with_libart:BuildOption:  -DWITH_LIBART=OFF}
-%{!?with_elficon:BuildOption:  -DWITH_ELFICON=OFF}
-%{?!with_tdehwlib:BuildOption:  -DWITH_TDEHWLIB=OFF}
-%{!?with_kbdledsync:BuildOption:  -DBUILD_TDEKBDLEDSYNC=OFF}
-%{!?with_tsak:BuildOption:  -DBUILD_TSAK=OFF}  
+BuildOption:  -DWITH_GCC_VISIBILITY=%{!?with_clang:ON}%{?with_clang:OFF}
+BuildOption:  -DWITH_OPENEXR=%{?!with_openexr:OFF}%{?with_openexr:ON}
+BuildOption:  -DWITH_XRANDR=%{?!with_xrandr:OFF}%{?with_xrandr:ON}
+BuildOption:  -DWITH_LIBCONFIG=%{?!with_libconfig:OFF}%{?with_libconfig:ON}
+BuildOption:  -DWITH_XTEST=%{?!with_xtest:OFF}%{?with_xtest:ON}
+BuildOption:  -DWITH_XSCREENSAVER=%{?!with_xscreensaver:OFF}%{?with_xscreensaver:ON}
+BuildOption:  -DWITH_LIBART=%{?!with_libart:OFF}%{?with_libart:ON}
+BuildOption:  -DWITH_ELFICON=%{!?with_elficon:OFF}%{?with_elficon:ON}
+BuildOption:  -DWITH_TDEHWLIB=%{?!with_tdehwlib:OFF}%{?with_tdehwlib:ON}
+BuildOption:  -DBUILD_TDEKBDLEDSYNC=%{!?with_kbdledsync:OFF}%{?with_kbdledsync:ON}
+BuildOption:  -DBUILD_TSAK=%{!?with_tsak:OFF}%{?with_tsak:ON}
 
 # OpenMandriva
 Requires:	distro-release-theme
@@ -333,9 +317,9 @@ web browser, X terminal emulator, and many other programs and components.
 %files
 %defattr(-,root,root,-)
 %doc AUTHORS COPYING COPYING-DOCS README README.pam
-%{tde_bindir}/tde_release_notes
-%{tde_datadir}/autostart/tde_release_notes.desktop
-%{tde_tdeappdir}/tdehtml_userinterface.desktop
+%{prefix}/bin/tde_release_notes
+%{prefix}/share/autostart/tde_release_notes.desktop
+%{prefix}/share/applications/tde/tdehtml_userinterface.desktop
 
 ##########
 
@@ -372,7 +356,7 @@ Kate plugins or TWin styles.
 
 %files devel
 %defattr(-,root,root,-)
-%{tde_datadir}/cmake/*.cmake
+%{prefix}/share/cmake/*.cmake
 
 ##########
 
@@ -396,22 +380,22 @@ Protocol handlers (TDEIOslaves) for personal information management, including:
 
 %files tdeio-pim-plugins
 %defattr(-,root,root,-)
-%{tde_tdelibdir}/tdeio_ldap.la
-%{tde_tdelibdir}/tdeio_ldap.so
-%{tde_tdelibdir}/tdeio_nntp.la
-%{tde_tdelibdir}/tdeio_nntp.so
-%{tde_tdelibdir}/tdeio_pop3.la
-%{tde_tdelibdir}/tdeio_pop3.so
-%{tde_tdelibdir}/tdeio_smtp.la
-%{tde_tdelibdir}/tdeio_smtp.so
-%{tde_datadir}/services/ldap.protocol
-%{tde_datadir}/services/ldaps.protocol
-%{tde_datadir}/services/nntp.protocol
-%{tde_datadir}/services/nntps.protocol
-%{tde_datadir}/services/pop3.protocol
-%{tde_datadir}/services/pop3s.protocol
-%{tde_datadir}/services/smtp.protocol
-%{tde_datadir}/services/smtps.protocol
+%{prefix}/%{_lib}/trinity/tdeio_ldap.la
+%{prefix}/%{_lib}/trinity/tdeio_ldap.so
+%{prefix}/%{_lib}/trinity/tdeio_nntp.la
+%{prefix}/%{_lib}/trinity/tdeio_nntp.so
+%{prefix}/%{_lib}/trinity/tdeio_pop3.la
+%{prefix}/%{_lib}/trinity/tdeio_pop3.so
+%{prefix}/%{_lib}/trinity/tdeio_smtp.la
+%{prefix}/%{_lib}/trinity/tdeio_smtp.so
+%{prefix}/share/services/ldap.protocol
+%{prefix}/share/services/ldaps.protocol
+%{prefix}/share/services/nntp.protocol
+%{prefix}/share/services/nntps.protocol
+%{prefix}/share/services/pop3.protocol
+%{prefix}/share/services/pop3s.protocol
+%{prefix}/share/services/smtp.protocol
+%{prefix}/share/services/smtps.protocol
 
 ##########
 
@@ -428,19 +412,19 @@ Such as the desktop right-click-"Create New" list
 
 %files runtime-data-common
 %defattr(-,root,root,-)
-%{tde_datadir}/apps/kxkb/
-%{tde_datadir}/desktop-directories/
-%{tde_datadir}/icons/hicolor/*/apps/kxkb.png
-%{tde_datadir}/icons/hicolor/*/apps/knetattach.*
-%{tde_datadir}/icons/hicolor/*/apps/khotkeys.png
-%{tde_datadir}/icons/hicolor/*/apps/kmenuedit.png
-%{tde_datadir}/icons/hicolor/*/apps/ksplash.png
-%{tde_datadir}/locale/en_US/entry.desktop
-%{tde_datadir}/locale/l10n/*.desktop
-%{tde_datadir}/locale/l10n/*/entry.desktop
-%{tde_datadir}/locale/l10n/*/flag.png
-%{tde_datadir}/sounds/pop.wav
-%{tde_datadir}/templates/
+%{prefix}/share/apps/kxkb/
+%{prefix}/share/desktop-directories/
+%{prefix}/share/icons/hicolor/*/apps/kxkb.png
+%{prefix}/share/icons/hicolor/*/apps/knetattach.*
+%{prefix}/share/icons/hicolor/*/apps/khotkeys.png
+%{prefix}/share/icons/hicolor/*/apps/kmenuedit.png
+%{prefix}/share/icons/hicolor/*/apps/ksplash.png
+%{prefix}/share/locale/en_US/entry.desktop
+%{prefix}/share/locale/l10n/*.desktop
+%{prefix}/share/locale/l10n/*/entry.desktop
+%{prefix}/share/locale/l10n/*/flag.png
+%{prefix}/share/sounds/pop.wav
+%{prefix}/share/templates/
 
 ##########
 
@@ -455,12 +439,12 @@ creates menu entries for them.
 
 %files -n trinity-kappfinder
 %defattr(-,root,root,-)
-%{tde_bindir}/kappfinder
-%{tde_tdeappdir}/kappfinder.desktop
-%{tde_datadir}/applnk/System/kappfinder.desktop
-%{tde_datadir}/apps/kappfinder
-%{tde_datadir}/icons/hicolor/*/apps/kappfinder.png
-%{tde_mandir}/man1/kappfinder.1*
+%{prefix}/bin/kappfinder
+%{prefix}/share/applications/tde/kappfinder.desktop
+%{prefix}/share/applnk/System/kappfinder.desktop
+%{prefix}/share/apps/kappfinder
+%{prefix}/share/icons/hicolor/*/apps/kappfinder.png
+%{prefix}/share/man/man1/kappfinder.1*
 
 ##########
 
@@ -473,7 +457,7 @@ This package contains the kateinterface library.
 
 %files -n trinity-libkateinterfaces
 %defattr(-,root,root,-)
-%{tde_libdir}/libkateinterfaces.so.*
+%{prefix}/%{_lib}/libkateinterfaces.so.*
 
 ##########
 
@@ -505,21 +489,21 @@ Some random features:
 
 %files -n trinity-kate
 %defattr(-,root,root,-)
-%{tde_bindir}/kate
-%{tde_tdelibdir}/kate.la
-%{tde_tdelibdir}/kate.so
-%{tde_libdir}/libkateutils.so.*
-%{tde_libdir}/libtdeinit_kate.la
-%{tde_libdir}/libtdeinit_kate.so
-%{tde_tdeappdir}/kate.desktop
-%{tde_datadir}/apps/kate/
-%{tde_datadir}/apps/tdeconf_update/kate-2.4.upd
-%config(noreplace) %{tde_confdir}/katerc
-%{tde_datadir}/icons/hicolor/*/apps/kate.png
-%{tde_datadir}/icons/hicolor/*/apps/kate2.svgz
-%{tde_datadir}/servicetypes/kateplugin.desktop
-%{tde_tdedocdir}/HTML/en/kate/
-%{tde_mandir}/man1/kate.1*
+%{prefix}/bin/kate
+%{prefix}/%{_lib}/trinity/kate.la
+%{prefix}/%{_lib}/trinity/kate.so
+%{prefix}/%{_lib}/libkateutils.so.*
+%{prefix}/%{_lib}/libtdeinit_kate.la
+%{prefix}/%{_lib}/libtdeinit_kate.so
+%{prefix}/share/applications/tde/kate.desktop
+%{prefix}/share/apps/kate/
+%{prefix}/share/apps/tdeconf_update/kate-2.4.upd
+%config(noreplace) %{_sysconfdir}/trinity/katerc
+%{prefix}/share/icons/hicolor/*/apps/kate.png
+%{prefix}/share/icons/hicolor/*/apps/kate2.svgz
+%{prefix}/share/servicetypes/kateplugin.desktop
+%{prefix}/share/doc/tde/HTML/en/kate/
+%{prefix}/share/man/man1/kate.1*
 
 ##########
 
@@ -533,11 +517,11 @@ This package contains the development files fare Kate.
 
 %files -n trinity-kate-devel
 %defattr(-,root,root,-)
-%{tde_tdeincludedir}/kate/
-%{tde_libdir}/libkateutils.so
-%{tde_libdir}/libkateutils.la
-%{tde_libdir}/libkateinterfaces.so
-%{tde_libdir}/libkateinterfaces.la
+%{prefix}/include/tde/kate/
+%{prefix}/%{_lib}/libkateutils.so
+%{prefix}/%{_lib}/libkateutils.la
+%{prefix}/%{_lib}/libkateinterfaces.so
+%{prefix}/%{_lib}/libkateinterfaces.la
 
 ##########
 
@@ -552,17 +536,17 @@ Kwrite is an advanced text editor for TDE.
 
 %files -n trinity-kwrite
 %defattr(-,root,root,-)
-%{tde_bindir}/kwrite
-%{tde_tdelibdir}/kwrite.la
-%{tde_tdelibdir}/kwrite.so
-%{tde_libdir}/libtdeinit_kwrite.la
-%{tde_libdir}/libtdeinit_kwrite.so
-%{tde_tdeappdir}/kwrite.desktop
-%{tde_datadir}/apps/kwrite/
-%{tde_datadir}/icons/hicolor/*/apps/kwrite.png
-%{tde_datadir}/icons/hicolor/*/apps/kwrite2.svgz
-%{tde_tdedocdir}/HTML/en/kwrite/
-%{tde_mandir}/man1/kwrite.1*
+%{prefix}/bin/kwrite
+%{prefix}/%{_lib}/trinity/kwrite.la
+%{prefix}/%{_lib}/trinity/kwrite.so
+%{prefix}/%{_lib}/libtdeinit_kwrite.la
+%{prefix}/%{_lib}/libtdeinit_kwrite.so
+%{prefix}/share/applications/tde/kwrite.desktop
+%{prefix}/share/apps/kwrite/
+%{prefix}/share/icons/hicolor/*/apps/kwrite.png
+%{prefix}/share/icons/hicolor/*/apps/kwrite2.svgz
+%{prefix}/share/doc/tde/HTML/en/kwrite/
+%{prefix}/share/man/man1/kwrite.1*
 
 ##########
 
@@ -589,285 +573,285 @@ plugdev group.
 
 %files -n trinity-kcontrol
 %defattr(-,root,root,-)
-%{tde_bindir}/kaccess
-%{tde_bindir}/kcontrol
-%{tde_bindir}/kdeinstallktheme
-%{tde_bindir}/keditfiletype
-%{tde_bindir}/tdefontinst
-%{tde_bindir}/tdefontview
-%{tde_bindir}/klocaldomainurifilterhelper
-%{tde_bindir}/krdb
-%{tde_tdelibdir}/fontthumbnail.la
-%{tde_tdelibdir}/fontthumbnail.so
-%{tde_tdelibdir}/kaccess.la
-%{tde_tdelibdir}/kaccess.so
-%{tde_tdelibdir}/kcm_access.la
-%{tde_tdelibdir}/kcm_access.so
-%{tde_tdelibdir}/kcm_arts.la
-%{tde_tdelibdir}/kcm_arts.so
-%{tde_tdelibdir}/kcm_background.la
-%{tde_tdelibdir}/kcm_background.so
-%{tde_tdelibdir}/kcm_bell.la
-%{tde_tdelibdir}/kcm_bell.so
-%{tde_tdelibdir}/kcm_clock.la
-%{tde_tdelibdir}/kcm_clock.so
-%{tde_tdelibdir}/kcm_colors.la
-%{tde_tdelibdir}/kcm_colors.so
-%{tde_tdelibdir}/kcm_componentchooser.la
-%{tde_tdelibdir}/kcm_componentchooser.so
-%{tde_tdelibdir}/kcm_crypto.la
-%{tde_tdelibdir}/kcm_crypto.so
-%{tde_tdelibdir}/kcm_css.la
-%{tde_tdelibdir}/kcm_css.so
-%{tde_tdelibdir}/kcm_display.la
-%{tde_tdelibdir}/kcm_display.so
-%{tde_tdelibdir}/kcm_energy.la
-%{tde_tdelibdir}/kcm_energy.so
-%{tde_tdelibdir}/kcm_filetypes.la
-%{tde_tdelibdir}/kcm_filetypes.so
-%{tde_tdelibdir}/kcm_fontinst.la
-%{tde_tdelibdir}/kcm_fontinst.so
-%{tde_tdelibdir}/kcm_fonts.la
-%{tde_tdelibdir}/kcm_fonts.so
+%{prefix}/bin/kaccess
+%{prefix}/bin/kcontrol
+%{prefix}/bin/kdeinstallktheme
+%{prefix}/bin/keditfiletype
+%{prefix}/bin/tdefontinst
+%{prefix}/bin/tdefontview
+%{prefix}/bin/klocaldomainurifilterhelper
+%{prefix}/bin/krdb
+%{prefix}/%{_lib}/trinity/fontthumbnail.la
+%{prefix}/%{_lib}/trinity/fontthumbnail.so
+%{prefix}/%{_lib}/trinity/kaccess.la
+%{prefix}/%{_lib}/trinity/kaccess.so
+%{prefix}/%{_lib}/trinity/kcm_access.la
+%{prefix}/%{_lib}/trinity/kcm_access.so
+%{prefix}/%{_lib}/trinity/kcm_arts.la
+%{prefix}/%{_lib}/trinity/kcm_arts.so
+%{prefix}/%{_lib}/trinity/kcm_background.la
+%{prefix}/%{_lib}/trinity/kcm_background.so
+%{prefix}/%{_lib}/trinity/kcm_bell.la
+%{prefix}/%{_lib}/trinity/kcm_bell.so
+%{prefix}/%{_lib}/trinity/kcm_clock.la
+%{prefix}/%{_lib}/trinity/kcm_clock.so
+%{prefix}/%{_lib}/trinity/kcm_colors.la
+%{prefix}/%{_lib}/trinity/kcm_colors.so
+%{prefix}/%{_lib}/trinity/kcm_componentchooser.la
+%{prefix}/%{_lib}/trinity/kcm_componentchooser.so
+%{prefix}/%{_lib}/trinity/kcm_crypto.la
+%{prefix}/%{_lib}/trinity/kcm_crypto.so
+%{prefix}/%{_lib}/trinity/kcm_css.la
+%{prefix}/%{_lib}/trinity/kcm_css.so
+%{prefix}/%{_lib}/trinity/kcm_display.la
+%{prefix}/%{_lib}/trinity/kcm_display.so
+%{prefix}/%{_lib}/trinity/kcm_energy.la
+%{prefix}/%{_lib}/trinity/kcm_energy.so
+%{prefix}/%{_lib}/trinity/kcm_filetypes.la
+%{prefix}/%{_lib}/trinity/kcm_filetypes.so
+%{prefix}/%{_lib}/trinity/kcm_fontinst.la
+%{prefix}/%{_lib}/trinity/kcm_fontinst.so
+%{prefix}/%{_lib}/trinity/kcm_fonts.la
+%{prefix}/%{_lib}/trinity/kcm_fonts.so
 %if %{with tdehwlib}
-%{tde_tdelibdir}/kcm_hwmanager.la
-%{tde_tdelibdir}/kcm_hwmanager.so
+%{prefix}/%{_lib}/trinity/kcm_hwmanager.la
+%{prefix}/%{_lib}/trinity/kcm_hwmanager.so
 %endif
-%{tde_tdelibdir}/kcm_icons.la
-%{tde_tdelibdir}/kcm_icons.so
-%{tde_tdelibdir}/kcm_info.la
-%{tde_tdelibdir}/kcm_info.so
-%{tde_tdelibdir}/kcm_input.la
-%{tde_tdelibdir}/kcm_input.so
-%{tde_tdelibdir}/kcm_joystick.la
-%{tde_tdelibdir}/kcm_joystick.so
-%{tde_tdelibdir}/kcm_kded.la
-%{tde_tdelibdir}/kcm_kded.so
-%{tde_tdelibdir}/kcm_%{tdm}.la
-%{tde_tdelibdir}/kcm_%{tdm}.so
-%{tde_tdelibdir}/kcm_tdednssd.so
-%{tde_tdelibdir}/kcm_tdednssd.la
-%{tde_tdelibdir}/kcm_keys.la
-%{tde_tdelibdir}/kcm_keys.so
-%{tde_tdelibdir}/kcm_kicker.la
-%{tde_tdelibdir}/kcm_kicker.so
-%{tde_tdelibdir}/kcm_tdeio.la
-%{tde_tdelibdir}/kcm_tdeio.so
-%{tde_tdelibdir}/kcm_knotify.la
-%{tde_tdelibdir}/kcm_knotify.so
-%{tde_tdelibdir}/kcm_konqhtml.la
-%{tde_tdelibdir}/kcm_konqhtml.so
-%{tde_tdelibdir}/kcm_konq.la
-%{tde_tdelibdir}/kcm_konq.so
-%{tde_tdelibdir}/kcm_kthememanager.la
-%{tde_tdelibdir}/kcm_kthememanager.so
-%{tde_tdelibdir}/kcm_kurifilt.la
-%{tde_tdelibdir}/kcm_kurifilt.so
-%{tde_tdelibdir}/kcm_launch.la
-%{tde_tdelibdir}/kcm_launch.so
-%{tde_tdelibdir}/kcm_locale.la
-%{tde_tdelibdir}/kcm_locale.so
-%{tde_tdelibdir}/kcm_nic.la
-%{tde_tdelibdir}/kcm_nic.so
-%{tde_tdelibdir}/kcm_performance.la
-%{tde_tdelibdir}/kcm_performance.so
-%{tde_tdelibdir}/kcm_privacy.la
-%{tde_tdelibdir}/kcm_privacy.so
-%{tde_tdelibdir}/kcm_screensaver.la
-%{tde_tdelibdir}/kcm_screensaver.so
-%{tde_tdelibdir}/kcm_smserver.la
-%{tde_tdelibdir}/kcm_smserver.so
-%{tde_tdelibdir}/kcm_spellchecking.la
-%{tde_tdelibdir}/kcm_spellchecking.so
-%{tde_tdelibdir}/kcm_style.la
-%{tde_tdelibdir}/kcm_style.so
-%{tde_tdelibdir}/kcm_taskbar.la
-%{tde_tdelibdir}/kcm_taskbar.so
-%{tde_tdelibdir}/kcm_usb.la
-%{tde_tdelibdir}/kcm_usb.so
-%{tde_tdelibdir}/kcm_view1394.la
-%{tde_tdelibdir}/kcm_view1394.so
-%{tde_tdelibdir}/kcm_xinerama.la
-%{tde_tdelibdir}/kcm_xinerama.so
-%{tde_tdelibdir}/kcontrol.la
-%{tde_tdelibdir}/kcontrol.so
-%{tde_tdelibdir}/tdefile_font.la
-%{tde_tdelibdir}/tdefile_font.so
-%{tde_tdelibdir}/tdeio_fonts.la
-%{tde_tdelibdir}/tdeio_fonts.so
-%{tde_tdelibdir}/tdestyle_keramik_config.la
-%{tde_tdelibdir}/tdestyle_keramik_config.so
-%{tde_tdelibdir}/libtdefontviewpart.la
-%{tde_tdelibdir}/libtdefontviewpart.so
-%{tde_tdelibdir}/libtdeshorturifilter.la
-%{tde_tdelibdir}/libtdeshorturifilter.so
-%{tde_tdelibdir}/libkuriikwsfilter.la
-%{tde_tdelibdir}/libkuriikwsfilter.so
-%{tde_tdelibdir}/libkurisearchfilter.la
-%{tde_tdelibdir}/libkurisearchfilter.so
-%{tde_tdelibdir}/liblocaldomainurifilter.la
-%{tde_tdelibdir}/liblocaldomainurifilter.so
-%{tde_libdir}/libtdeinit_kaccess.la
-%{tde_libdir}/libtdeinit_kaccess.so
-%{tde_libdir}/libtdeinit_kcontrol.la
-%{tde_libdir}/libtdeinit_kcontrol.so
-%{tde_libdir}/libtdefontinst.so.*
-%{tde_tdeappdir}/arts.desktop
-%{tde_tdeappdir}/background.desktop
-%{tde_tdeappdir}/bell.desktop
-%{tde_tdeappdir}/cache.desktop
-%{tde_tdeappdir}/cdinfo.desktop
-%{tde_tdeappdir}/clock.desktop
-%{tde_tdeappdir}/colors.desktop
-%{tde_tdeappdir}/componentchooser.desktop
-%{tde_tdeappdir}/cookies.desktop
-%{tde_tdeappdir}/crypto.desktop
-%{tde_tdeappdir}/desktopbehavior.desktop
-%{tde_tdeappdir}/desktop.desktop
-%{tde_tdeappdir}/desktoppath.desktop
-%{tde_tdeappdir}/devices.desktop
-%{tde_tdeappdir}/display.desktop
-%{tde_tdeappdir}/dma.desktop
-%{tde_tdeappdir}/ebrowsing.desktop
-%{tde_tdeappdir}/filebrowser.desktop
-%{tde_tdeappdir}/filetypes.desktop
-%{tde_tdeappdir}/fonts.desktop
-%{?with_tdehwlib:%{tde_tdeappdir}/hwmanager.desktop}
-%{tde_tdeappdir}/icons.desktop
-%{tde_tdeappdir}/installktheme.desktop
-%{tde_tdeappdir}/interrupts.desktop
-%{tde_tdeappdir}/ioports.desktop
-%{tde_tdeappdir}/joystick.desktop
-%{tde_tdeappdir}/kcm_tdednssd.desktop
-%{tde_tdeappdir}/kcmaccess.desktop
-%{tde_tdeappdir}/kcmcss.desktop
-%{tde_tdeappdir}/kcmfontinst.desktop
-%{tde_tdeappdir}/kcmkded.desktop
-%{tde_tdeappdir}/kcmlaunch.desktop
-%{tde_tdeappdir}/kcmnotify.desktop
-%{tde_tdeappdir}/kcmperformance.desktop
-%{tde_tdeappdir}/kcmsmserver.desktop
-%{tde_tdeappdir}/kcmtaskbar.desktop
-%{tde_tdeappdir}/kcmusb.desktop
-%{tde_tdeappdir}/kcmview1394.desktop
-%{tde_tdeappdir}/KControl.desktop
-%{tde_tdeappdir}/%{tdm}.desktop
-%{tde_tdeappdir}/keys.desktop
-%{tde_tdeappdir}/tdefontview.desktop
-%{tde_tdeappdir}/tdehtml_behavior.desktop
-%{tde_tdeappdir}/tdehtml_fonts.desktop
-%{tde_tdeappdir}/tdehtml_java_js.desktop
-%{tde_tdeappdir}/kthememanager.desktop
-%{tde_tdeappdir}/lanbrowser.desktop
-%{tde_tdeappdir}/language.desktop
-%{tde_tdeappdir}/media.desktop
-%{tde_tdeappdir}/memory.desktop
-%{tde_tdeappdir}/mouse.desktop
-%{tde_tdeappdir}/netpref.desktop
-%{tde_tdeappdir}/nic.desktop
-%{tde_tdeappdir}/opengl.desktop
-%{tde_tdeappdir}/panel_appearance.desktop
-%{tde_tdeappdir}/panel.desktop
-%{tde_tdeappdir}/partitions.desktop
-%{tde_tdeappdir}/pci.desktop
-%{tde_tdeappdir}/privacy.desktop
-%{tde_tdeappdir}/processor.desktop
-%{tde_tdeappdir}/proxy.desktop
-%{tde_tdeappdir}/screensaver.desktop
-%{tde_tdeappdir}/scsi.desktop
-%{tde_tdeappdir}/smbstatus.desktop
-%{tde_tdeappdir}/sound.desktop
-%{tde_tdeappdir}/spellchecking.desktop
-%{tde_tdeappdir}/style.desktop
-%{tde_tdeappdir}/tde-kcontrol.desktop
-%{tde_tdeappdir}/useragent.desktop
-%{tde_tdeappdir}/xserver.desktop
-%{tde_datadir}/applnk/.hidden/energy.desktop
-%{tde_datadir}/applnk/.hidden/fileappearance.desktop
-%{tde_datadir}/applnk/.hidden/filebehavior.desktop
-%{tde_datadir}/applnk/.hidden/filepreviews.desktop
-%{tde_datadir}/applnk/.hidden/kcmkonqyperformance.desktop
-%{tde_datadir}/applnk/.hidden/kicker_config_appearance.desktop
-%{tde_datadir}/applnk/.hidden/kicker_config.desktop
-%{tde_datadir}/applnk/.hidden/smb.desktop
-%{tde_datadir}/applnk/.hidden/xinerama.desktop
-%{tde_datadir}/applnk/Settings/LookNFeel/
-%{tde_datadir}/applnk/Settings/WebBrowsing/tdehtml_appearance.desktop
-%{tde_datadir}/applnk/Settings/WebBrowsing/nsplugin.desktop
-%{tde_datadir}/applnk/Settings/WebBrowsing/smb.desktop
-%{tde_datadir}/apps/kcm_componentchooser/kcm_browser.desktop
-%{tde_datadir}/apps/kcm_componentchooser/kcm_kemail.desktop
-%{tde_datadir}/apps/kcm_componentchooser/kcm_filemanager.desktop
-%{tde_datadir}/apps/kcm_componentchooser/kcm_terminal.desktop
-%{tde_datadir}/apps/kcmview1394/
-%{tde_datadir}/apps/konqsidebartng/virtual_folders/services/fonts.desktop
-%{tde_datadir}/apps/konqueror/servicemenus/installfont.desktop
-%{tde_datadir}/apps/usb.ids
-%{tde_datadir}/mimelnk/application/x-ktheme.desktop
-%{tde_datadir}/mimelnk/fonts/folder.desktop
-%{tde_datadir}/mimelnk/fonts/package.desktop
-%{tde_datadir}/mimelnk/fonts/system-folder.desktop
-%{tde_datadir}/services/fonts.protocol
-%{tde_datadir}/services/fontthumbnail.desktop
-%{tde_datadir}/services/kaccess.desktop
-%{tde_datadir}/services/tdefile_font.desktop
-%{tde_datadir}/services/tdefontviewpart.desktop
-%{tde_datadir}/services/tdeshorturifilter.desktop
-%{tde_datadir}/services/kuriikwsfilter.desktop
-%{tde_datadir}/services/kurisearchfilter.desktop
-%{tde_datadir}/services/localdomainurifilter.desktop
-%{tde_datadir}/icons/hicolor/*/apps/kcmcolors.png
-%{tde_datadir}/icons/hicolor/*/apps/kcmcomponentchooser.png
-%{tde_datadir}/icons/hicolor/*/apps/kcmdesktop.png
-%{tde_datadir}/icons/hicolor/*/apps/kcmdesktopbehavior.png
-%{tde_datadir}/icons/hicolor/*/apps/kcmkdnssd.png
-%{tde_datadir}/icons/hicolor/*/apps/kcmlaunch.png
-%{tde_datadir}/icons/hicolor/*/apps/kcmmedia.png
-%{tde_datadir}/icons/hicolor/*/apps/kcmmouse.png
-%{tde_datadir}/icons/hicolor/*/apps/kcmnetpref.png
-%{tde_datadir}/icons/hicolor/*/apps/kcmnic.png
-%{tde_datadir}/icons/hicolor/*/apps/kcmperformance.png
-%{tde_datadir}/icons/hicolor/*/apps/kcmprivacy.png
-%{tde_datadir}/icons/hicolor/*/apps/kcmtaskbar.png
-%{tde_datadir}/icons/hicolor/*/apps/kcmcgi.png
-%{tde_datadir}/icons/hicolor/*/apps/kcmcrypto.png
-%{tde_datadir}/icons/hicolor/*/apps/kcmhistory.png
-%{tde_datadir}/icons/hicolor/*/apps/kcmjoystick.png
-%{tde_datadir}/icons/hicolor/*/apps/kcmkded.png
-%{tde_datadir}/icons/hicolor/*/apps/kcmkhtml_filter.png
-%{tde_datadir}/icons/hicolor/*/apps/kcmsmserver.png
-%{tde_datadir}/icons/hicolor/*/apps/kcmspellchecking.png
-%{tde_tdedocdir}/HTML/en/tdefontview/
+%{prefix}/%{_lib}/trinity/kcm_icons.la
+%{prefix}/%{_lib}/trinity/kcm_icons.so
+%{prefix}/%{_lib}/trinity/kcm_info.la
+%{prefix}/%{_lib}/trinity/kcm_info.so
+%{prefix}/%{_lib}/trinity/kcm_input.la
+%{prefix}/%{_lib}/trinity/kcm_input.so
+%{prefix}/%{_lib}/trinity/kcm_joystick.la
+%{prefix}/%{_lib}/trinity/kcm_joystick.so
+%{prefix}/%{_lib}/trinity/kcm_kded.la
+%{prefix}/%{_lib}/trinity/kcm_kded.so
+%{prefix}/%{_lib}/trinity/kcm_tdm.la
+%{prefix}/%{_lib}/trinity/kcm_tdm.so
+%{prefix}/%{_lib}/trinity/kcm_tdednssd.so
+%{prefix}/%{_lib}/trinity/kcm_tdednssd.la
+%{prefix}/%{_lib}/trinity/kcm_keys.la
+%{prefix}/%{_lib}/trinity/kcm_keys.so
+%{prefix}/%{_lib}/trinity/kcm_kicker.la
+%{prefix}/%{_lib}/trinity/kcm_kicker.so
+%{prefix}/%{_lib}/trinity/kcm_tdeio.la
+%{prefix}/%{_lib}/trinity/kcm_tdeio.so
+%{prefix}/%{_lib}/trinity/kcm_knotify.la
+%{prefix}/%{_lib}/trinity/kcm_knotify.so
+%{prefix}/%{_lib}/trinity/kcm_konqhtml.la
+%{prefix}/%{_lib}/trinity/kcm_konqhtml.so
+%{prefix}/%{_lib}/trinity/kcm_konq.la
+%{prefix}/%{_lib}/trinity/kcm_konq.so
+%{prefix}/%{_lib}/trinity/kcm_kthememanager.la
+%{prefix}/%{_lib}/trinity/kcm_kthememanager.so
+%{prefix}/%{_lib}/trinity/kcm_kurifilt.la
+%{prefix}/%{_lib}/trinity/kcm_kurifilt.so
+%{prefix}/%{_lib}/trinity/kcm_launch.la
+%{prefix}/%{_lib}/trinity/kcm_launch.so
+%{prefix}/%{_lib}/trinity/kcm_locale.la
+%{prefix}/%{_lib}/trinity/kcm_locale.so
+%{prefix}/%{_lib}/trinity/kcm_nic.la
+%{prefix}/%{_lib}/trinity/kcm_nic.so
+%{prefix}/%{_lib}/trinity/kcm_performance.la
+%{prefix}/%{_lib}/trinity/kcm_performance.so
+%{prefix}/%{_lib}/trinity/kcm_privacy.la
+%{prefix}/%{_lib}/trinity/kcm_privacy.so
+%{prefix}/%{_lib}/trinity/kcm_screensaver.la
+%{prefix}/%{_lib}/trinity/kcm_screensaver.so
+%{prefix}/%{_lib}/trinity/kcm_smserver.la
+%{prefix}/%{_lib}/trinity/kcm_smserver.so
+%{prefix}/%{_lib}/trinity/kcm_spellchecking.la
+%{prefix}/%{_lib}/trinity/kcm_spellchecking.so
+%{prefix}/%{_lib}/trinity/kcm_style.la
+%{prefix}/%{_lib}/trinity/kcm_style.so
+%{prefix}/%{_lib}/trinity/kcm_taskbar.la
+%{prefix}/%{_lib}/trinity/kcm_taskbar.so
+%{prefix}/%{_lib}/trinity/kcm_usb.la
+%{prefix}/%{_lib}/trinity/kcm_usb.so
+%{prefix}/%{_lib}/trinity/kcm_view1394.la
+%{prefix}/%{_lib}/trinity/kcm_view1394.so
+%{prefix}/%{_lib}/trinity/kcm_xinerama.la
+%{prefix}/%{_lib}/trinity/kcm_xinerama.so
+%{prefix}/%{_lib}/trinity/kcontrol.la
+%{prefix}/%{_lib}/trinity/kcontrol.so
+%{prefix}/%{_lib}/trinity/tdefile_font.la
+%{prefix}/%{_lib}/trinity/tdefile_font.so
+%{prefix}/%{_lib}/trinity/tdeio_fonts.la
+%{prefix}/%{_lib}/trinity/tdeio_fonts.so
+%{prefix}/%{_lib}/trinity/tdestyle_keramik_config.la
+%{prefix}/%{_lib}/trinity/tdestyle_keramik_config.so
+%{prefix}/%{_lib}/trinity/libtdefontviewpart.la
+%{prefix}/%{_lib}/trinity/libtdefontviewpart.so
+%{prefix}/%{_lib}/trinity/libtdeshorturifilter.la
+%{prefix}/%{_lib}/trinity/libtdeshorturifilter.so
+%{prefix}/%{_lib}/trinity/libkuriikwsfilter.la
+%{prefix}/%{_lib}/trinity/libkuriikwsfilter.so
+%{prefix}/%{_lib}/trinity/libkurisearchfilter.la
+%{prefix}/%{_lib}/trinity/libkurisearchfilter.so
+%{prefix}/%{_lib}/trinity/liblocaldomainurifilter.la
+%{prefix}/%{_lib}/trinity/liblocaldomainurifilter.so
+%{prefix}/%{_lib}/libtdeinit_kaccess.la
+%{prefix}/%{_lib}/libtdeinit_kaccess.so
+%{prefix}/%{_lib}/libtdeinit_kcontrol.la
+%{prefix}/%{_lib}/libtdeinit_kcontrol.so
+%{prefix}/%{_lib}/libtdefontinst.so.*
+%{prefix}/share/applications/tde/arts.desktop
+%{prefix}/share/applications/tde/background.desktop
+%{prefix}/share/applications/tde/bell.desktop
+%{prefix}/share/applications/tde/cache.desktop
+%{prefix}/share/applications/tde/cdinfo.desktop
+%{prefix}/share/applications/tde/clock.desktop
+%{prefix}/share/applications/tde/colors.desktop
+%{prefix}/share/applications/tde/componentchooser.desktop
+%{prefix}/share/applications/tde/cookies.desktop
+%{prefix}/share/applications/tde/crypto.desktop
+%{prefix}/share/applications/tde/desktopbehavior.desktop
+%{prefix}/share/applications/tde/desktop.desktop
+%{prefix}/share/applications/tde/desktoppath.desktop
+%{prefix}/share/applications/tde/devices.desktop
+%{prefix}/share/applications/tde/display.desktop
+%{prefix}/share/applications/tde/dma.desktop
+%{prefix}/share/applications/tde/ebrowsing.desktop
+%{prefix}/share/applications/tde/filebrowser.desktop
+%{prefix}/share/applications/tde/filetypes.desktop
+%{prefix}/share/applications/tde/fonts.desktop
+%{?with_tdehwlib:%{prefix}/share/applications/tde/hwmanager.desktop}
+%{prefix}/share/applications/tde/icons.desktop
+%{prefix}/share/applications/tde/installktheme.desktop
+%{prefix}/share/applications/tde/interrupts.desktop
+%{prefix}/share/applications/tde/ioports.desktop
+%{prefix}/share/applications/tde/joystick.desktop
+%{prefix}/share/applications/tde/kcm_tdednssd.desktop
+%{prefix}/share/applications/tde/kcmaccess.desktop
+%{prefix}/share/applications/tde/kcmcss.desktop
+%{prefix}/share/applications/tde/kcmfontinst.desktop
+%{prefix}/share/applications/tde/kcmkded.desktop
+%{prefix}/share/applications/tde/kcmlaunch.desktop
+%{prefix}/share/applications/tde/kcmnotify.desktop
+%{prefix}/share/applications/tde/kcmperformance.desktop
+%{prefix}/share/applications/tde/kcmsmserver.desktop
+%{prefix}/share/applications/tde/kcmtaskbar.desktop
+%{prefix}/share/applications/tde/kcmusb.desktop
+%{prefix}/share/applications/tde/kcmview1394.desktop
+%{prefix}/share/applications/tde/KControl.desktop
+%{prefix}/share/applications/tde/tdm.desktop
+%{prefix}/share/applications/tde/keys.desktop
+%{prefix}/share/applications/tde/tdefontview.desktop
+%{prefix}/share/applications/tde/tdehtml_behavior.desktop
+%{prefix}/share/applications/tde/tdehtml_fonts.desktop
+%{prefix}/share/applications/tde/tdehtml_java_js.desktop
+%{prefix}/share/applications/tde/kthememanager.desktop
+%{prefix}/share/applications/tde/lanbrowser.desktop
+%{prefix}/share/applications/tde/language.desktop
+%{prefix}/share/applications/tde/media.desktop
+%{prefix}/share/applications/tde/memory.desktop
+%{prefix}/share/applications/tde/mouse.desktop
+%{prefix}/share/applications/tde/netpref.desktop
+%{prefix}/share/applications/tde/nic.desktop
+%{prefix}/share/applications/tde/opengl.desktop
+%{prefix}/share/applications/tde/panel_appearance.desktop
+%{prefix}/share/applications/tde/panel.desktop
+%{prefix}/share/applications/tde/partitions.desktop
+%{prefix}/share/applications/tde/pci.desktop
+%{prefix}/share/applications/tde/privacy.desktop
+%{prefix}/share/applications/tde/processor.desktop
+%{prefix}/share/applications/tde/proxy.desktop
+%{prefix}/share/applications/tde/screensaver.desktop
+%{prefix}/share/applications/tde/scsi.desktop
+%{prefix}/share/applications/tde/smbstatus.desktop
+%{prefix}/share/applications/tde/sound.desktop
+%{prefix}/share/applications/tde/spellchecking.desktop
+%{prefix}/share/applications/tde/style.desktop
+%{prefix}/share/applications/tde/tde-kcontrol.desktop
+%{prefix}/share/applications/tde/useragent.desktop
+%{prefix}/share/applications/tde/xserver.desktop
+%{prefix}/share/applnk/.hidden/energy.desktop
+%{prefix}/share/applnk/.hidden/fileappearance.desktop
+%{prefix}/share/applnk/.hidden/filebehavior.desktop
+%{prefix}/share/applnk/.hidden/filepreviews.desktop
+%{prefix}/share/applnk/.hidden/kcmkonqyperformance.desktop
+%{prefix}/share/applnk/.hidden/kicker_config_appearance.desktop
+%{prefix}/share/applnk/.hidden/kicker_config.desktop
+%{prefix}/share/applnk/.hidden/smb.desktop
+%{prefix}/share/applnk/.hidden/xinerama.desktop
+%{prefix}/share/applnk/Settings/LookNFeel/
+%{prefix}/share/applnk/Settings/WebBrowsing/tdehtml_appearance.desktop
+%{prefix}/share/applnk/Settings/WebBrowsing/nsplugin.desktop
+%{prefix}/share/applnk/Settings/WebBrowsing/smb.desktop
+%{prefix}/share/apps/kcm_componentchooser/kcm_browser.desktop
+%{prefix}/share/apps/kcm_componentchooser/kcm_kemail.desktop
+%{prefix}/share/apps/kcm_componentchooser/kcm_filemanager.desktop
+%{prefix}/share/apps/kcm_componentchooser/kcm_terminal.desktop
+%{prefix}/share/apps/kcmview1394/
+%{prefix}/share/apps/konqsidebartng/virtual_folders/services/fonts.desktop
+%{prefix}/share/apps/konqueror/servicemenus/installfont.desktop
+%{prefix}/share/apps/usb.ids
+%{prefix}/share/mimelnk/application/x-ktheme.desktop
+%{prefix}/share/mimelnk/fonts/folder.desktop
+%{prefix}/share/mimelnk/fonts/package.desktop
+%{prefix}/share/mimelnk/fonts/system-folder.desktop
+%{prefix}/share/services/fonts.protocol
+%{prefix}/share/services/fontthumbnail.desktop
+%{prefix}/share/services/kaccess.desktop
+%{prefix}/share/services/tdefile_font.desktop
+%{prefix}/share/services/tdefontviewpart.desktop
+%{prefix}/share/services/tdeshorturifilter.desktop
+%{prefix}/share/services/kuriikwsfilter.desktop
+%{prefix}/share/services/kurisearchfilter.desktop
+%{prefix}/share/services/localdomainurifilter.desktop
+%{prefix}/share/icons/hicolor/*/apps/kcmcolors.png
+%{prefix}/share/icons/hicolor/*/apps/kcmcomponentchooser.png
+%{prefix}/share/icons/hicolor/*/apps/kcmdesktop.png
+%{prefix}/share/icons/hicolor/*/apps/kcmdesktopbehavior.png
+%{prefix}/share/icons/hicolor/*/apps/kcmkdnssd.png
+%{prefix}/share/icons/hicolor/*/apps/kcmlaunch.png
+%{prefix}/share/icons/hicolor/*/apps/kcmmedia.png
+%{prefix}/share/icons/hicolor/*/apps/kcmmouse.png
+%{prefix}/share/icons/hicolor/*/apps/kcmnetpref.png
+%{prefix}/share/icons/hicolor/*/apps/kcmnic.png
+%{prefix}/share/icons/hicolor/*/apps/kcmperformance.png
+%{prefix}/share/icons/hicolor/*/apps/kcmprivacy.png
+%{prefix}/share/icons/hicolor/*/apps/kcmtaskbar.png
+%{prefix}/share/icons/hicolor/*/apps/kcmcgi.png
+%{prefix}/share/icons/hicolor/*/apps/kcmcrypto.png
+%{prefix}/share/icons/hicolor/*/apps/kcmhistory.png
+%{prefix}/share/icons/hicolor/*/apps/kcmjoystick.png
+%{prefix}/share/icons/hicolor/*/apps/kcmkded.png
+%{prefix}/share/icons/hicolor/*/apps/kcmkhtml_filter.png
+%{prefix}/share/icons/hicolor/*/apps/kcmsmserver.png
+%{prefix}/share/icons/hicolor/*/apps/kcmspellchecking.png
+%{prefix}/share/doc/tde/HTML/en/tdefontview/
 
 # tdehwtray
-%{tde_bindir}/tdehwdevicetray
-%{tde_tdeappdir}/tdehwdevicetray.desktop
-%{tde_datadir}/autostart/tdehwdevicetray-autostart.desktop
+%{prefix}/bin/tdehwdevicetray
+%{prefix}/share/applications/tde/tdehwdevicetray.desktop
+%{prefix}/share/autostart/tdehwdevicetray-autostart.desktop
 
 # tdesyndaemon
-%{tde_bindir}/tdesyndaemon
-%{tde_tdeappdir}/touchpad.desktop
-%{tde_datadir}/apps/tdeconf_update/remote_folder_icon.upd
-%{tde_datadir}/apps/tdeconf_update/remote_folder_icon_upd.sh
-%{tde_datadir}/icons/crystalsvg/*/devices/input-touchpad.png
-%{tde_datadir}/icons/crystalsvg/scalable/devices/input-touchpad.svg
-%{tde_datadir}/services/kded/khotkeys.desktop
+%{prefix}/bin/tdesyndaemon
+%{prefix}/share/applications/tde/touchpad.desktop
+%{prefix}/share/apps/tdeconf_update/remote_folder_icon.upd
+%{prefix}/share/apps/tdeconf_update/remote_folder_icon_upd.sh
+%{prefix}/share/icons/crystalsvg/*/devices/input-touchpad.png
+%{prefix}/share/icons/crystalsvg/scalable/devices/input-touchpad.svg
+%{prefix}/share/services/kded/khotkeys.desktop
 
 # The following features are not compiled under RHEL 5 and older
 %if %{with tderandrtray}
-%{tde_bindir}/tderandrtray
-%{tde_tdelibdir}/kcm_displayconfig.la
-%{tde_tdelibdir}/kcm_displayconfig.so
-%{tde_tdelibdir}/kcm_iccconfig.la
-%{tde_tdelibdir}/kcm_iccconfig.so
-%{tde_tdelibdir}/kcm_randr.la
-%{tde_tdelibdir}/kcm_randr.so
-%{tde_tdeappdir}/displayconfig.desktop
-%{tde_tdeappdir}/iccconfig.desktop
-%{tde_tdeappdir}/tderandrtray.desktop
-%{tde_datadir}/applnk/.hidden/randr.desktop
-%{tde_datadir}/autostart/tderandrtray-autostart.desktop
-%{tde_tdedocdir}/HTML/en/tderandrtray/
+%{prefix}/bin/tderandrtray
+%{prefix}/%{_lib}/trinity/kcm_displayconfig.la
+%{prefix}/%{_lib}/trinity/kcm_displayconfig.so
+%{prefix}/%{_lib}/trinity/kcm_iccconfig.la
+%{prefix}/%{_lib}/trinity/kcm_iccconfig.so
+%{prefix}/%{_lib}/trinity/kcm_randr.la
+%{prefix}/%{_lib}/trinity/kcm_randr.so
+%{prefix}/share/applications/tde/displayconfig.desktop
+%{prefix}/share/applications/tde/iccconfig.desktop
+%{prefix}/share/applications/tde/tderandrtray.desktop
+%{prefix}/share/applnk/.hidden/randr.desktop
+%{prefix}/share/autostart/tderandrtray-autostart.desktop
+%{prefix}/share/doc/tde/HTML/en/tderandrtray/
 %endif
 
 ##########
@@ -882,8 +866,8 @@ Requires:	trinity-kcontrol = %{?epoch:%{epoch}:}%{version}-%{release}
 
 %files -n trinity-kcontrol-devel
 %defattr(-,root,root,-)
-%{tde_libdir}/libtdefontinst.la
-%{tde_libdir}/libtdefontinst.so
+%{prefix}/%{_lib}/libtdefontinst.la
+%{prefix}/%{_lib}/libtdefontinst.so
 
 ##########
 
@@ -902,105 +886,105 @@ TDE applications, particularly those in the TDE base module.
 
 %files bin
 %defattr(-,root,root,-)
-%{tde_bindir}/krootbacking
-%{?with_tsak:%{tde_bindir}/tsak}
-%{?with_libconfig:%{tde_bindir}/compton-tde}
-%{tde_bindir}/tdedebugdialog
-%{tde_bindir}/kreadconfig
-%{tde_bindir}/kwriteconfig
-%{tde_bindir}/kstart
-%config(noreplace) %{tde_confdir}/kxkb_groups
-%{tde_bindir}/drkonqi
-%{tde_bindir}/crashtest
-%{tde_bindir}/kapplymousetheme
-%{tde_bindir}/kblankscrn.kss
-%{tde_bindir}/kcminit
-%{tde_bindir}/kcminit_startup
-%{tde_bindir}/kdcop
-%{tde_bindir}/tdesu
-%attr(0755,root,root) %{tde_bindir}/tdesud
-%{tde_bindir}/kdialog
-%{tde_bindir}/khotkeys
-%{tde_bindir}/knetattach
-%{tde_bindir}/krandom.kss
-%{tde_bindir}/ksystraycmd
-%{tde_bindir}/kxkb
-%{tde_bindir}/tde_license_info
-%{tde_bindir}/tde_show_license_info
-%dir %{tde_libdir}/tdeconf_update_bin
-%{tde_libdir}/tdeconf_update_bin/khotkeys_update
-%{tde_tdelibdir}/kcminit.la
-%{tde_tdelibdir}/kcminit.so
-%{tde_tdelibdir}/kcminit_startup.la
-%{tde_tdelibdir}/kcminit_startup.so
-%{tde_tdelibdir}/kcm_keyboard.la
-%{tde_tdelibdir}/kcm_keyboard.so
-%{tde_tdelibdir}/kcm_khotkeys.la
-%{tde_tdelibdir}/kcm_khotkeys.so
-%{tde_tdelibdir}/kded_khotkeys.la
-%{tde_tdelibdir}/kded_khotkeys.so
-%{tde_tdelibdir}/kgreet_classic.la
-%{tde_tdelibdir}/kgreet_classic.so
-%{tde_tdelibdir}/kgreet_winbind.la
-%{tde_tdelibdir}/kgreet_winbind.so
-%{tde_tdelibdir}/khotkeys.la
-%{tde_tdelibdir}/khotkeys.so
-%{tde_tdelibdir}/khotkeys_arts.la
-%{tde_tdelibdir}/khotkeys_arts.so
-%{tde_tdelibdir}/kxkb.la
-%{tde_tdelibdir}/kxkb.so
-%{tde_libdir}/libtdeinit_kcminit.la
-%{tde_libdir}/libtdeinit_kcminit.so
-%{tde_libdir}/libtdeinit_kcminit_startup.la
-%{tde_libdir}/libtdeinit_kcminit_startup.so
-%{tde_libdir}/libtdeinit_khotkeys.la
-%{tde_libdir}/libtdeinit_khotkeys.so
-%{tde_libdir}/libtdeinit_kxkb.la
-%{tde_libdir}/libtdeinit_kxkb.so
-%{tde_libdir}/libkhotkeys_shared.so.*
-%{tde_tdeappdir}/kdcop.desktop
-%{tde_tdeappdir}/keyboard.desktop
-%{tde_tdeappdir}/keyboard_layout.desktop
-%{tde_tdeappdir}/khotkeys.desktop
-%{tde_tdeappdir}/knetattach.desktop
-%{tde_datadir}/applnk/System/ScreenSavers/
-%{tde_datadir}/apps/drkonqi/
-%{tde_datadir}/apps/tdeconf_update/khotkeys_32b1_update.upd
-%{tde_datadir}/apps/tdeconf_update/khotkeys_printscreen.upd
-%{tde_datadir}/apps/tdeconf_update/konqueror_gestures_trinity21_update.upd
-%{tde_datadir}/apps/kdcop/
-%{tde_datadir}/apps/khotkeys/
-%{tde_datadir}/autostart/tde_license_info.desktop
-%{tde_datadir}/services/kxkb.desktop
+%{prefix}/bin/krootbacking
+%{?with_tsak:%{prefix}/bin/tsak}
+%{?with_libconfig:%{prefix}/bin/compton-tde}
+%{prefix}/bin/tdedebugdialog
+%{prefix}/bin/kreadconfig
+%{prefix}/bin/kwriteconfig
+%{prefix}/bin/kstart
+%config(noreplace) %{_sysconfdir}/trinity/kxkb_groups
+%{prefix}/bin/drkonqi
+%{prefix}/bin/crashtest
+%{prefix}/bin/kapplymousetheme
+%{prefix}/bin/kblankscrn.kss
+%{prefix}/bin/kcminit
+%{prefix}/bin/kcminit_startup
+%{prefix}/bin/kdcop
+%{prefix}/bin/tdesu
+%attr(0755,root,root) %{prefix}/bin/tdesud
+%{prefix}/bin/kdialog
+%{prefix}/bin/khotkeys
+%{prefix}/bin/knetattach
+%{prefix}/bin/krandom.kss
+%{prefix}/bin/ksystraycmd
+%{prefix}/bin/kxkb
+%{prefix}/bin/tde_license_info
+%{prefix}/bin/tde_show_license_info
+%dir %{prefix}/%{_lib}/tdeconf_update_bin
+%{prefix}/%{_lib}/tdeconf_update_bin/khotkeys_update
+%{prefix}/%{_lib}/trinity/kcminit.la
+%{prefix}/%{_lib}/trinity/kcminit.so
+%{prefix}/%{_lib}/trinity/kcminit_startup.la
+%{prefix}/%{_lib}/trinity/kcminit_startup.so
+%{prefix}/%{_lib}/trinity/kcm_keyboard.la
+%{prefix}/%{_lib}/trinity/kcm_keyboard.so
+%{prefix}/%{_lib}/trinity/kcm_khotkeys.la
+%{prefix}/%{_lib}/trinity/kcm_khotkeys.so
+%{prefix}/%{_lib}/trinity/kded_khotkeys.la
+%{prefix}/%{_lib}/trinity/kded_khotkeys.so
+%{prefix}/%{_lib}/trinity/kgreet_classic.la
+%{prefix}/%{_lib}/trinity/kgreet_classic.so
+%{prefix}/%{_lib}/trinity/kgreet_winbind.la
+%{prefix}/%{_lib}/trinity/kgreet_winbind.so
+%{prefix}/%{_lib}/trinity/khotkeys.la
+%{prefix}/%{_lib}/trinity/khotkeys.so
+%{prefix}/%{_lib}/trinity/khotkeys_arts.la
+%{prefix}/%{_lib}/trinity/khotkeys_arts.so
+%{prefix}/%{_lib}/trinity/kxkb.la
+%{prefix}/%{_lib}/trinity/kxkb.so
+%{prefix}/%{_lib}/libtdeinit_kcminit.la
+%{prefix}/%{_lib}/libtdeinit_kcminit.so
+%{prefix}/%{_lib}/libtdeinit_kcminit_startup.la
+%{prefix}/%{_lib}/libtdeinit_kcminit_startup.so
+%{prefix}/%{_lib}/libtdeinit_khotkeys.la
+%{prefix}/%{_lib}/libtdeinit_khotkeys.so
+%{prefix}/%{_lib}/libtdeinit_kxkb.la
+%{prefix}/%{_lib}/libtdeinit_kxkb.so
+%{prefix}/%{_lib}/libkhotkeys_shared.so.*
+%{prefix}/share/applications/tde/kdcop.desktop
+%{prefix}/share/applications/tde/keyboard.desktop
+%{prefix}/share/applications/tde/keyboard_layout.desktop
+%{prefix}/share/applications/tde/khotkeys.desktop
+%{prefix}/share/applications/tde/knetattach.desktop
+%{prefix}/share/applnk/System/ScreenSavers/
+%{prefix}/share/apps/drkonqi/
+%{prefix}/share/apps/tdeconf_update/khotkeys_32b1_update.upd
+%{prefix}/share/apps/tdeconf_update/khotkeys_printscreen.upd
+%{prefix}/share/apps/tdeconf_update/konqueror_gestures_trinity21_update.upd
+%{prefix}/share/apps/kdcop/
+%{prefix}/share/apps/khotkeys/
+%{prefix}/share/autostart/tde_license_info.desktop
+%{prefix}/share/services/kxkb.desktop
 %config(noreplace) %{_sysconfdir}/pam.d/kcheckpass-trinity
 %config(noreplace) %{_sysconfdir}/pam.d/tdescreensaver-trinity
-%{tde_tdedocdir}/HTML/en/kdcop/
-%{tde_tdedocdir}/HTML/en/tdedebugdialog//
-%{tde_tdedocdir}/HTML/en/tdesu/
-%{tde_tdedocdir}/HTML/en/knetattach/
-%{tde_tdedocdir}/HTML/en/kxkb/
-%{tde_mandir}/man1/drkonqi.1*
-%{tde_mandir}/man1/kblankscrn.kss.1*
-%{tde_mandir}/man1/kcheckpass.1*
-%{tde_mandir}/man1/kcminit.1*
-%{tde_mandir}/man1/kdcop.1*
-%{tde_mandir}/man1/kdialog.1*
-%{tde_mandir}/man1/khotkeys.1*
-%{tde_mandir}/man1/knetattach.1*
-%{tde_mandir}/man1/krandom.kss.1*
-%{tde_mandir}/man1/kreadconfig.1*
-%{tde_mandir}/man1/kstart.1*
-%{tde_mandir}/man1/ksystraycmd.1*
-%{tde_mandir}/man1/kwriteconfig.1*
-%{tde_mandir}/man1/kxkb.1*
-%{tde_mandir}/man1/tdedebugdialog.1*
-%{tde_mandir}/man1/tdesu.1*
+%{prefix}/share/doc/tde/HTML/en/kdcop/
+%{prefix}/share/doc/tde/HTML/en/tdedebugdialog//
+%{prefix}/share/doc/tde/HTML/en/tdesu/
+%{prefix}/share/doc/tde/HTML/en/knetattach/
+%{prefix}/share/doc/tde/HTML/en/kxkb/
+%{prefix}/share/man/man1/drkonqi.1*
+%{prefix}/share/man/man1/kblankscrn.kss.1*
+%{prefix}/share/man/man1/kcheckpass.1*
+%{prefix}/share/man/man1/kcminit.1*
+%{prefix}/share/man/man1/kdcop.1*
+%{prefix}/share/man/man1/kdialog.1*
+%{prefix}/share/man/man1/khotkeys.1*
+%{prefix}/share/man/man1/knetattach.1*
+%{prefix}/share/man/man1/krandom.kss.1*
+%{prefix}/share/man/man1/kreadconfig.1*
+%{prefix}/share/man/man1/kstart.1*
+%{prefix}/share/man/man1/ksystraycmd.1*
+%{prefix}/share/man/man1/kwriteconfig.1*
+%{prefix}/share/man/man1/kxkb.1*
+%{prefix}/share/man/man1/tdedebugdialog.1*
+%{prefix}/share/man/man1/tdesu.1*
 
 # SETUID binaries
 # Some setuid binaries need special care
-%{?with_tsak:%attr(4511,root,root) %{tde_bindir}/%{tdm}tsak}
-%attr(4755,root,root) %{tde_bindir}/kcheckpass
-%{?with_kbdledsync:%attr(4755,root,root) %{tde_bindir}/tdekbdledsync}
+%{?with_tsak:%attr(4511,root,root) %{prefix}/bin/tdmtsak}
+%attr(4755,root,root) %{prefix}/bin/kcheckpass
+%{?with_kbdledsync:%attr(4755,root,root) %{prefix}/bin/tdekbdledsync}
 
 %package bin-devel
 Summary:	Development files for core binaries for the TDE base module
@@ -1017,8 +1001,8 @@ the TDE base module
 
 %files bin-devel
 %defattr(-,root,root,-)
-%{tde_libdir}/libkhotkeys_shared.la
-%{tde_libdir}/libkhotkeys_shared.so
+%{prefix}/%{_lib}/libkhotkeys_shared.la
+%{prefix}/%{_lib}/libkhotkeys_shared.so
 
 ##########
 
@@ -1036,261 +1020,261 @@ needed for a basic TDE desktop installation.
 
 %files data
 %defattr(-,root,root,-)
-%config(noreplace) %{tde_confdir}/tdeshorturifilterrc
-%{tde_datadir}/applnk/.hidden/battery.desktop
-%{tde_datadir}/applnk/.hidden/bwarning.desktop
-%{tde_datadir}/applnk/.hidden/cwarning.desktop
-%{tde_datadir}/applnk/.hidden/.directory
-%{tde_datadir}/applnk/.hidden/email.desktop
-%{tde_datadir}/applnk/.hidden/kcmkonq.desktop
-%{tde_datadir}/applnk/.hidden/kcmkxmlrpcd.desktop
-%{tde_datadir}/applnk/.hidden/konqhtml.desktop
-%{tde_datadir}/applnk/.hidden/passwords.desktop
-%{tde_datadir}/applnk/.hidden/power.desktop
-%{tde_datadir}/applnk/.hidden/socks.desktop
-%{tde_datadir}/applnk/.hidden/userinfo.desktop
-%{tde_datadir}/applnk/.hidden/virtualdesktops.desktop
-%{tde_datadir}/apps/kaccess/
-%{tde_datadir}/apps/kcmcss/
-%{tde_datadir}/apps/kcminput/
-%{tde_datadir}/apps/kcmkeys/
-%{tde_datadir}/apps/kcmlocale/
-%{tde_datadir}/apps/tdeconf_update/convertShortcuts.pl
-%{tde_datadir}/apps/tdeconf_update/tdeaccel.upd
-%{tde_datadir}/apps/tdeconf_update/kcmdisplayrc.upd
-%{tde_datadir}/apps/tdeconf_update/kuriikwsfilter.upd
-%{tde_datadir}/apps/tdeconf_update/mouse_cursor_theme.upd
-%{tde_datadir}/apps/tdeconf_update/socks.upd
-%{tde_datadir}/apps/kcontrol/
-%{tde_datadir}/apps/tdedisplay/
-%{tde_datadir}/apps/tdefontview/
-%{tde_datadir}/apps/kthememanager/
-%{tde_datadir}/icons/crystalsvg/*/apps/access.png
-%{tde_datadir}/icons/crystalsvg/*/apps/acroread.png
-%{tde_datadir}/icons/crystalsvg/*/apps/applixware.png
-%{tde_datadir}/icons/crystalsvg/*/apps/arts.png
-%{tde_datadir}/icons/crystalsvg/*/apps/background.png
-%{tde_datadir}/icons/crystalsvg/*/apps/bell.png
-%{tde_datadir}/icons/crystalsvg/*/apps/cache.png
-%{tde_datadir}/icons/crystalsvg/*/apps/clanbomber.png
-%{tde_datadir}/icons/crystalsvg/*/apps/clock.png
-%{tde_datadir}/icons/crystalsvg/*/apps/colors.png
-%{tde_datadir}/icons/crystalsvg/*/apps/date.png
-%{tde_datadir}/icons/crystalsvg/*/apps/email.png
-%{tde_datadir}/icons/crystalsvg/*/apps/energy.png
-%{tde_datadir}/icons/crystalsvg/*/apps/energy_star.png
-%{tde_datadir}/icons/crystalsvg/*/apps/filetypes.png
-%{tde_datadir}/icons/crystalsvg/*/apps/fonts.png
-%{tde_datadir}/icons/crystalsvg/*/apps/gimp.png
-%{tde_datadir}/icons/crystalsvg/*/apps/help_index.png
-%{tde_datadir}/icons/crystalsvg/*/apps/hwinfo.png
-%{tde_datadir}/icons/crystalsvg/*/apps/kcmdevices.png
-%{tde_datadir}/icons/crystalsvg/*/apps/kcmdf.png
-%{tde_datadir}/icons/crystalsvg/*/apps/kcmkwm.png
-%{tde_datadir}/icons/crystalsvg/*/apps/kcmmemory.png
-%{tde_datadir}/icons/crystalsvg/*/apps/kcmpartitions.png
-%{tde_datadir}/icons/crystalsvg/*/apps/kcmpci.png
-%{tde_datadir}/icons/crystalsvg/*/apps/kcontrol.png
-%{tde_datadir}/icons/crystalsvg/*/apps/%{tdm}config.png
-%{tde_datadir}/icons/crystalsvg/*/apps/key_bindings.png
-%{tde_datadir}/icons/crystalsvg/*/apps/kfm_home.png
-%{tde_datadir}/icons/crystalsvg/*/apps/tdescreensaver.png
-%{tde_datadir}/icons/crystalsvg/*/apps/kthememgr.png
-%{tde_datadir}/icons/crystalsvg/*/apps/licq.png
-%{tde_datadir}/icons/crystalsvg/*/apps/linuxconf.png
-%{tde_datadir}/icons/crystalsvg/*/apps/locale.png
-%{tde_datadir}/icons/crystalsvg/*/categories/preferences-desktop.png
-%{tde_datadir}/icons/crystalsvg/*/apps/multimedia.png
-%{tde_datadir}/icons/crystalsvg/*/apps/netscape.png
-%{tde_datadir}/icons/crystalsvg/*/apps/package_applications.png
-%{tde_datadir}/icons/crystalsvg/*/categories/applications-development.png
-%{tde_datadir}/icons/crystalsvg/*/apps/package_favourite.png
-%{tde_datadir}/icons/crystalsvg/*/categories/applications-games.png
-%{tde_datadir}/icons/crystalsvg/*/apps/package_games_kids.png
-%{tde_datadir}/icons/crystalsvg/*/categories/applications-multimedia.png
-%{tde_datadir}/icons/crystalsvg/*/categories/applications-internet.png
-%{tde_datadir}/icons/crystalsvg/*/apps/package.png
-%{tde_datadir}/icons/crystalsvg/*/apps/package_settings.png
-%{tde_datadir}/icons/crystalsvg/*/apps/package_toys.png
-%{tde_datadir}/icons/crystalsvg/*/categories/applications-utilities.png
-%{tde_datadir}/icons/crystalsvg/*/apps/penguin.png
-%{tde_datadir}/icons/crystalsvg/*/categories/preferences-desktop-personal.png
-%{tde_datadir}/icons/crystalsvg/*/apps/phppg.png
-%{tde_datadir}/icons/crystalsvg/*/apps/package_games_logic.png
-%{tde_datadir}/icons/crystalsvg/*/apps/proxy.png
-%{tde_datadir}/icons/crystalsvg/*/apps/pysol.png
-%{tde_datadir}/icons/crystalsvg/*/apps/randr.png
-%{tde_datadir}/icons/crystalsvg/*/apps/samba.png
-%{tde_datadir}/icons/crystalsvg/*/apps/staroffice.png
-%{tde_datadir}/icons/crystalsvg/*/apps/stylesheet.png
-%{tde_datadir}/icons/crystalsvg/*/apps/terminal.png
-%{tde_datadir}/icons/crystalsvg/*/apps/tux.png
-%{tde_datadir}/icons/crystalsvg/*/apps/wp.png
-%{tde_datadir}/icons/crystalsvg/*/apps/xclock.png
-%{tde_datadir}/icons/crystalsvg/*/apps/xfmail.png
-%{tde_datadir}/icons/crystalsvg/*/apps/xmag.png
-%{tde_datadir}/icons/crystalsvg/*/apps/xpaint.png
-%{tde_datadir}/icons/crystalsvg/scalable/apps/access.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/acroread.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/aim.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/aktion.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/antivirus.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/applixware.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/arts.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/background.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/bell.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/browser.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/cache.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/camera.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/clanbomber.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/clock.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/colors.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/core.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/date.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/display.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/download_manager.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/email.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/energy.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/error.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/fifteenpieces.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/filetypes.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/fonts.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/galeon.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/gnome_apps.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/hardware.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/hwinfo.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/ieee1394.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/kcmdevices.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/kcmkwm.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/kcmx.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/locale.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/my_mac.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/netscape.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/openoffice.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/package_development.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/package_games_kids.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/package_toys.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/penguin.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/personal.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/quicktime.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/realplayer.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/samba.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/shell.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/staroffice.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/stylesheet.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/terminal.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/tux.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/wine.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/x.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/xapp.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/xcalc.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/xchat.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/xclock.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/xeyes.svgz
-%{tde_datadir}/icons/crystalsvg/scalable/apps/xpaint.svgz
-%{tde_datadir}/icons/crystalsvg/*/devices/laptop.png
-%{tde_datadir}/icons/crystalsvg/*/devices/laptop.svgz
-%{tde_datadir}/icons/crystalsvg/*/actions/newfont.png
-%{tde_datadir}/icons/crystalsvg/*/apps/abiword.png
-%{tde_datadir}/icons/crystalsvg/*/apps/agent.png
-%{tde_datadir}/icons/crystalsvg/*/apps/alevt.png
-%{tde_datadir}/icons/crystalsvg/*/apps/assistant.png
-%{tde_datadir}/icons/crystalsvg/*/apps/blender.png
-%{tde_datadir}/icons/crystalsvg/*/apps/bluefish.png
-%{tde_datadir}/icons/crystalsvg/*/apps/cookie.png
-%{tde_datadir}/icons/crystalsvg/*/apps/designer.png
-%{tde_datadir}/icons/crystalsvg/*/apps/dia.png
-%{tde_datadir}/icons/crystalsvg/*/apps/dlgedit.png
-%{tde_datadir}/icons/crystalsvg/*/apps/eclipse.png
-%{tde_datadir}/icons/crystalsvg/*/apps/edu_languages.png
-%{tde_datadir}/icons/crystalsvg/*/apps/edu_mathematics.png
-%{tde_datadir}/icons/crystalsvg/*/apps/edu_miscellaneous.png
-%{tde_datadir}/icons/crystalsvg/*/categories/applications-science.png
-%{tde_datadir}/icons/crystalsvg/*/apps/emacs.png
-%{tde_datadir}/icons/crystalsvg/*/apps/enhanced_browsing.png
-%{tde_datadir}/icons/crystalsvg/*/apps/evolution.png
-%{tde_datadir}/icons/crystalsvg/*/apps/fifteenpieces.png
-%{tde_datadir}/icons/crystalsvg/*/apps/gabber.png
-%{tde_datadir}/icons/crystalsvg/*/apps/gaim.png
-%{tde_datadir}/icons/crystalsvg/*/apps/gnome_apps.png
-%{tde_datadir}/icons/crystalsvg/*/apps/gnomemeeting.png
-%{tde_datadir}/icons/crystalsvg/*/apps/gnucash.png
-%{tde_datadir}/icons/crystalsvg/*/apps/gnumeric.png
-%{tde_datadir}/icons/crystalsvg/*/apps/gv.png
-%{tde_datadir}/icons/crystalsvg/*/apps/gvim.png
-%{tde_datadir}/icons/crystalsvg/*/apps/icons.png
-%{tde_datadir}/icons/crystalsvg/*/apps/iconthemes.png
-%{tde_datadir}/icons/crystalsvg/*/apps/ieee1394.png
-%{tde_datadir}/icons/crystalsvg/*/categories/preferences-desktop-peripherals.png
-%{tde_datadir}/icons/crystalsvg/*/apps/kcmkicker.png
-%{tde_datadir}/icons/crystalsvg/*/apps/kcmmidi.png
-%{tde_datadir}/icons/crystalsvg/*/apps/kcmprocessor.png
-%{tde_datadir}/icons/crystalsvg/*/apps/kcmscsi.png
-%{tde_datadir}/icons/crystalsvg/*/apps/kcmsound.png
-%{tde_datadir}/icons/crystalsvg/*/categories/preferences-system.png
-%{tde_datadir}/icons/crystalsvg/*/apps/kcmx.png
-%{tde_datadir}/icons/crystalsvg/*/apps/keyboard.png
-%{tde_datadir}/icons/crystalsvg/*/apps/keyboard_layout.png
-%{tde_datadir}/icons/crystalsvg/*/apps/knotify.png
-%{tde_datadir}/icons/crystalsvg/*/apps/kvirc.png
-%{tde_datadir}/icons/crystalsvg/*/apps/linguist.png
-%{tde_datadir}/icons/crystalsvg/*/apps/lyx.png
-%{tde_datadir}/icons/crystalsvg/*/apps/mac.png
-%{tde_datadir}/icons/crystalsvg/*/apps/mathematica.png
-%{tde_datadir}/icons/crystalsvg/*/apps/nedit.png
-%{tde_datadir}/icons/crystalsvg/*/apps/opera.png
-%{tde_datadir}/icons/crystalsvg/*/apps/package_application.png
-%{tde_datadir}/icons/crystalsvg/*/apps/package_editors.png
-%{tde_datadir}/icons/crystalsvg/*/apps/package_edutainment.png
-%{tde_datadir}/icons/crystalsvg/*/apps/package_games_arcade.png
-%{tde_datadir}/icons/crystalsvg/*/apps/package_games_board.png
-%{tde_datadir}/icons/crystalsvg/*/apps/package_games_card.png
-%{tde_datadir}/icons/crystalsvg/*/apps/package_games_strategy.png
-%{tde_datadir}/icons/crystalsvg/*/categories/applications-graphics.png
-%{tde_datadir}/icons/crystalsvg/*/apps/package_system.png
-%{tde_datadir}/icons/crystalsvg/*/categories/applications-office.png
-%{tde_datadir}/icons/crystalsvg/*/apps/pan.png
-%{tde_datadir}/icons/crystalsvg/*/apps/panel_settings.png
-%{tde_datadir}/icons/crystalsvg/*/apps/plan.png
-%{tde_datadir}/icons/crystalsvg/*/apps/planner.png
-%{tde_datadir}/icons/crystalsvg/*/apps/pybliographic.png
-%{tde_datadir}/icons/crystalsvg/*/apps/realplayer.png
-%{tde_datadir}/icons/crystalsvg/*/apps/remote.png
-%{tde_datadir}/icons/crystalsvg/*/apps/scribus.png
-%{tde_datadir}/icons/crystalsvg/*/apps/sodipodi.png
-%{tde_datadir}/icons/crystalsvg/*/apps/style.png
-%{tde_datadir}/icons/crystalsvg/*/apps/usb.png
-%{tde_datadir}/icons/crystalsvg/*/apps/vnc.png
-%{tde_datadir}/icons/crystalsvg/*/apps/wabi.png
-%{tde_datadir}/icons/crystalsvg/*/apps/wine.png
-%{tde_datadir}/icons/crystalsvg/*/apps/xcalc.png
-%{tde_datadir}/icons/crystalsvg/*/apps/xchat.png
-%{tde_datadir}/icons/crystalsvg/*/apps/xclipboard.png
-%{tde_datadir}/icons/crystalsvg/*/apps/xconsole.png
-%{tde_datadir}/icons/crystalsvg/*/apps/xedit.png
-%{tde_datadir}/icons/crystalsvg/*/apps/xemacs.png
-%{tde_datadir}/icons/crystalsvg/*/apps/xeyes.png
-%{tde_datadir}/icons/crystalsvg/*/apps/xfig.png
-%{tde_datadir}/icons/crystalsvg/*/apps/xload.png
-%{tde_datadir}/icons/crystalsvg/*/apps/xmms.png
-%{tde_datadir}/icons/crystalsvg/*/apps/xosview.png
-%{tde_datadir}/icons/crystalsvg/*/apps/xv.png
-%{tde_datadir}/icons/crystalsvg/*/apps/galeon.png
-%{tde_datadir}/icons/crystalsvg/*/apps/kcmdrkonqi.png
-%{tde_datadir}/icons/crystalsvg/*/apps/pinguin.png
-%{tde_datadir}/icons/crystalsvg/*/apps/x.png
-%{tde_datadir}/icons/crystalsvg/*/apps/xapp.png
-%{tde_datadir}/icons/crystalsvg/*/apps/xawtv.png
-%{tde_datadir}/icons/crystalsvg/*/apps/kcmopengl.png
-%{tde_datadir}/icons/crystalsvg/*/apps/wmaker_apps.png
-%{tde_datadir}/icons/crystalsvg/*/apps/qtella.png
-%{tde_datadir}/services/searchproviders
-%{tde_datadir}/services/useragentstrings/
-%{tde_datadir}/servicetypes/searchprovider.desktop
-%{tde_datadir}/servicetypes/uasprovider.desktop
-%exclude %{tde_datadir}/sounds/pop.wav
-%{tde_datadir}/sounds/
-%{tde_datadir}/wallpapers/*
+%config(noreplace) %{_sysconfdir}/trinity/tdeshorturifilterrc
+%{prefix}/share/applnk/.hidden/battery.desktop
+%{prefix}/share/applnk/.hidden/bwarning.desktop
+%{prefix}/share/applnk/.hidden/cwarning.desktop
+%{prefix}/share/applnk/.hidden/.directory
+%{prefix}/share/applnk/.hidden/email.desktop
+%{prefix}/share/applnk/.hidden/kcmkonq.desktop
+%{prefix}/share/applnk/.hidden/kcmkxmlrpcd.desktop
+%{prefix}/share/applnk/.hidden/konqhtml.desktop
+%{prefix}/share/applnk/.hidden/passwords.desktop
+%{prefix}/share/applnk/.hidden/power.desktop
+%{prefix}/share/applnk/.hidden/socks.desktop
+%{prefix}/share/applnk/.hidden/userinfo.desktop
+%{prefix}/share/applnk/.hidden/virtualdesktops.desktop
+%{prefix}/share/apps/kaccess/
+%{prefix}/share/apps/kcmcss/
+%{prefix}/share/apps/kcminput/
+%{prefix}/share/apps/kcmkeys/
+%{prefix}/share/apps/kcmlocale/
+%{prefix}/share/apps/tdeconf_update/convertShortcuts.pl
+%{prefix}/share/apps/tdeconf_update/tdeaccel.upd
+%{prefix}/share/apps/tdeconf_update/kcmdisplayrc.upd
+%{prefix}/share/apps/tdeconf_update/kuriikwsfilter.upd
+%{prefix}/share/apps/tdeconf_update/mouse_cursor_theme.upd
+%{prefix}/share/apps/tdeconf_update/socks.upd
+%{prefix}/share/apps/kcontrol/
+%{prefix}/share/apps/tdedisplay/
+%{prefix}/share/apps/tdefontview/
+%{prefix}/share/apps/kthememanager/
+%{prefix}/share/icons/crystalsvg/*/apps/access.png
+%{prefix}/share/icons/crystalsvg/*/apps/acroread.png
+%{prefix}/share/icons/crystalsvg/*/apps/applixware.png
+%{prefix}/share/icons/crystalsvg/*/apps/arts.png
+%{prefix}/share/icons/crystalsvg/*/apps/background.png
+%{prefix}/share/icons/crystalsvg/*/apps/bell.png
+%{prefix}/share/icons/crystalsvg/*/apps/cache.png
+%{prefix}/share/icons/crystalsvg/*/apps/clanbomber.png
+%{prefix}/share/icons/crystalsvg/*/apps/clock.png
+%{prefix}/share/icons/crystalsvg/*/apps/colors.png
+%{prefix}/share/icons/crystalsvg/*/apps/date.png
+%{prefix}/share/icons/crystalsvg/*/apps/email.png
+%{prefix}/share/icons/crystalsvg/*/apps/energy.png
+%{prefix}/share/icons/crystalsvg/*/apps/energy_star.png
+%{prefix}/share/icons/crystalsvg/*/apps/filetypes.png
+%{prefix}/share/icons/crystalsvg/*/apps/fonts.png
+%{prefix}/share/icons/crystalsvg/*/apps/gimp.png
+%{prefix}/share/icons/crystalsvg/*/apps/help_index.png
+%{prefix}/share/icons/crystalsvg/*/apps/hwinfo.png
+%{prefix}/share/icons/crystalsvg/*/apps/kcmdevices.png
+%{prefix}/share/icons/crystalsvg/*/apps/kcmdf.png
+%{prefix}/share/icons/crystalsvg/*/apps/kcmkwm.png
+%{prefix}/share/icons/crystalsvg/*/apps/kcmmemory.png
+%{prefix}/share/icons/crystalsvg/*/apps/kcmpartitions.png
+%{prefix}/share/icons/crystalsvg/*/apps/kcmpci.png
+%{prefix}/share/icons/crystalsvg/*/apps/kcontrol.png
+%{prefix}/share/icons/crystalsvg/*/apps/tdmconfig.png
+%{prefix}/share/icons/crystalsvg/*/apps/key_bindings.png
+%{prefix}/share/icons/crystalsvg/*/apps/kfm_home.png
+%{prefix}/share/icons/crystalsvg/*/apps/tdescreensaver.png
+%{prefix}/share/icons/crystalsvg/*/apps/kthememgr.png
+%{prefix}/share/icons/crystalsvg/*/apps/licq.png
+%{prefix}/share/icons/crystalsvg/*/apps/linuxconf.png
+%{prefix}/share/icons/crystalsvg/*/apps/locale.png
+%{prefix}/share/icons/crystalsvg/*/categories/preferences-desktop.png
+%{prefix}/share/icons/crystalsvg/*/apps/multimedia.png
+%{prefix}/share/icons/crystalsvg/*/apps/netscape.png
+%{prefix}/share/icons/crystalsvg/*/apps/package_applications.png
+%{prefix}/share/icons/crystalsvg/*/categories/applications-development.png
+%{prefix}/share/icons/crystalsvg/*/apps/package_favourite.png
+%{prefix}/share/icons/crystalsvg/*/categories/applications-games.png
+%{prefix}/share/icons/crystalsvg/*/apps/package_games_kids.png
+%{prefix}/share/icons/crystalsvg/*/categories/applications-multimedia.png
+%{prefix}/share/icons/crystalsvg/*/categories/applications-internet.png
+%{prefix}/share/icons/crystalsvg/*/apps/package.png
+%{prefix}/share/icons/crystalsvg/*/apps/package_settings.png
+%{prefix}/share/icons/crystalsvg/*/apps/package_toys.png
+%{prefix}/share/icons/crystalsvg/*/categories/applications-utilities.png
+%{prefix}/share/icons/crystalsvg/*/apps/penguin.png
+%{prefix}/share/icons/crystalsvg/*/categories/preferences-desktop-personal.png
+%{prefix}/share/icons/crystalsvg/*/apps/phppg.png
+%{prefix}/share/icons/crystalsvg/*/apps/package_games_logic.png
+%{prefix}/share/icons/crystalsvg/*/apps/proxy.png
+%{prefix}/share/icons/crystalsvg/*/apps/pysol.png
+%{prefix}/share/icons/crystalsvg/*/apps/randr.png
+%{prefix}/share/icons/crystalsvg/*/apps/samba.png
+%{prefix}/share/icons/crystalsvg/*/apps/staroffice.png
+%{prefix}/share/icons/crystalsvg/*/apps/stylesheet.png
+%{prefix}/share/icons/crystalsvg/*/apps/terminal.png
+%{prefix}/share/icons/crystalsvg/*/apps/tux.png
+%{prefix}/share/icons/crystalsvg/*/apps/wp.png
+%{prefix}/share/icons/crystalsvg/*/apps/xclock.png
+%{prefix}/share/icons/crystalsvg/*/apps/xfmail.png
+%{prefix}/share/icons/crystalsvg/*/apps/xmag.png
+%{prefix}/share/icons/crystalsvg/*/apps/xpaint.png
+%{prefix}/share/icons/crystalsvg/scalable/apps/access.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/acroread.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/aim.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/aktion.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/antivirus.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/applixware.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/arts.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/background.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/bell.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/browser.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/cache.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/camera.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/clanbomber.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/clock.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/colors.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/core.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/date.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/display.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/download_manager.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/email.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/energy.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/error.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/fifteenpieces.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/filetypes.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/fonts.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/galeon.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/gnome_apps.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/hardware.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/hwinfo.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/ieee1394.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/kcmdevices.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/kcmkwm.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/kcmx.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/locale.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/my_mac.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/netscape.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/openoffice.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/package_development.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/package_games_kids.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/package_toys.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/penguin.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/personal.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/quicktime.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/realplayer.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/samba.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/shell.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/staroffice.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/stylesheet.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/terminal.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/tux.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/wine.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/x.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/xapp.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/xcalc.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/xchat.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/xclock.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/xeyes.svgz
+%{prefix}/share/icons/crystalsvg/scalable/apps/xpaint.svgz
+%{prefix}/share/icons/crystalsvg/*/devices/laptop.png
+%{prefix}/share/icons/crystalsvg/*/devices/laptop.svgz
+%{prefix}/share/icons/crystalsvg/*/actions/newfont.png
+%{prefix}/share/icons/crystalsvg/*/apps/abiword.png
+%{prefix}/share/icons/crystalsvg/*/apps/agent.png
+%{prefix}/share/icons/crystalsvg/*/apps/alevt.png
+%{prefix}/share/icons/crystalsvg/*/apps/assistant.png
+%{prefix}/share/icons/crystalsvg/*/apps/blender.png
+%{prefix}/share/icons/crystalsvg/*/apps/bluefish.png
+%{prefix}/share/icons/crystalsvg/*/apps/cookie.png
+%{prefix}/share/icons/crystalsvg/*/apps/designer.png
+%{prefix}/share/icons/crystalsvg/*/apps/dia.png
+%{prefix}/share/icons/crystalsvg/*/apps/dlgedit.png
+%{prefix}/share/icons/crystalsvg/*/apps/eclipse.png
+%{prefix}/share/icons/crystalsvg/*/apps/edu_languages.png
+%{prefix}/share/icons/crystalsvg/*/apps/edu_mathematics.png
+%{prefix}/share/icons/crystalsvg/*/apps/edu_miscellaneous.png
+%{prefix}/share/icons/crystalsvg/*/categories/applications-science.png
+%{prefix}/share/icons/crystalsvg/*/apps/emacs.png
+%{prefix}/share/icons/crystalsvg/*/apps/enhanced_browsing.png
+%{prefix}/share/icons/crystalsvg/*/apps/evolution.png
+%{prefix}/share/icons/crystalsvg/*/apps/fifteenpieces.png
+%{prefix}/share/icons/crystalsvg/*/apps/gabber.png
+%{prefix}/share/icons/crystalsvg/*/apps/gaim.png
+%{prefix}/share/icons/crystalsvg/*/apps/gnome_apps.png
+%{prefix}/share/icons/crystalsvg/*/apps/gnomemeeting.png
+%{prefix}/share/icons/crystalsvg/*/apps/gnucash.png
+%{prefix}/share/icons/crystalsvg/*/apps/gnumeric.png
+%{prefix}/share/icons/crystalsvg/*/apps/gv.png
+%{prefix}/share/icons/crystalsvg/*/apps/gvim.png
+%{prefix}/share/icons/crystalsvg/*/apps/icons.png
+%{prefix}/share/icons/crystalsvg/*/apps/iconthemes.png
+%{prefix}/share/icons/crystalsvg/*/apps/ieee1394.png
+%{prefix}/share/icons/crystalsvg/*/categories/preferences-desktop-peripherals.png
+%{prefix}/share/icons/crystalsvg/*/apps/kcmkicker.png
+%{prefix}/share/icons/crystalsvg/*/apps/kcmmidi.png
+%{prefix}/share/icons/crystalsvg/*/apps/kcmprocessor.png
+%{prefix}/share/icons/crystalsvg/*/apps/kcmscsi.png
+%{prefix}/share/icons/crystalsvg/*/apps/kcmsound.png
+%{prefix}/share/icons/crystalsvg/*/categories/preferences-system.png
+%{prefix}/share/icons/crystalsvg/*/apps/kcmx.png
+%{prefix}/share/icons/crystalsvg/*/apps/keyboard.png
+%{prefix}/share/icons/crystalsvg/*/apps/keyboard_layout.png
+%{prefix}/share/icons/crystalsvg/*/apps/knotify.png
+%{prefix}/share/icons/crystalsvg/*/apps/kvirc.png
+%{prefix}/share/icons/crystalsvg/*/apps/linguist.png
+%{prefix}/share/icons/crystalsvg/*/apps/lyx.png
+%{prefix}/share/icons/crystalsvg/*/apps/mac.png
+%{prefix}/share/icons/crystalsvg/*/apps/mathematica.png
+%{prefix}/share/icons/crystalsvg/*/apps/nedit.png
+%{prefix}/share/icons/crystalsvg/*/apps/opera.png
+%{prefix}/share/icons/crystalsvg/*/apps/package_application.png
+%{prefix}/share/icons/crystalsvg/*/apps/package_editors.png
+%{prefix}/share/icons/crystalsvg/*/apps/package_edutainment.png
+%{prefix}/share/icons/crystalsvg/*/apps/package_games_arcade.png
+%{prefix}/share/icons/crystalsvg/*/apps/package_games_board.png
+%{prefix}/share/icons/crystalsvg/*/apps/package_games_card.png
+%{prefix}/share/icons/crystalsvg/*/apps/package_games_strategy.png
+%{prefix}/share/icons/crystalsvg/*/categories/applications-graphics.png
+%{prefix}/share/icons/crystalsvg/*/apps/package_system.png
+%{prefix}/share/icons/crystalsvg/*/categories/applications-office.png
+%{prefix}/share/icons/crystalsvg/*/apps/pan.png
+%{prefix}/share/icons/crystalsvg/*/apps/panel_settings.png
+%{prefix}/share/icons/crystalsvg/*/apps/plan.png
+%{prefix}/share/icons/crystalsvg/*/apps/planner.png
+%{prefix}/share/icons/crystalsvg/*/apps/pybliographic.png
+%{prefix}/share/icons/crystalsvg/*/apps/realplayer.png
+%{prefix}/share/icons/crystalsvg/*/apps/remote.png
+%{prefix}/share/icons/crystalsvg/*/apps/scribus.png
+%{prefix}/share/icons/crystalsvg/*/apps/sodipodi.png
+%{prefix}/share/icons/crystalsvg/*/apps/style.png
+%{prefix}/share/icons/crystalsvg/*/apps/usb.png
+%{prefix}/share/icons/crystalsvg/*/apps/vnc.png
+%{prefix}/share/icons/crystalsvg/*/apps/wabi.png
+%{prefix}/share/icons/crystalsvg/*/apps/wine.png
+%{prefix}/share/icons/crystalsvg/*/apps/xcalc.png
+%{prefix}/share/icons/crystalsvg/*/apps/xchat.png
+%{prefix}/share/icons/crystalsvg/*/apps/xclipboard.png
+%{prefix}/share/icons/crystalsvg/*/apps/xconsole.png
+%{prefix}/share/icons/crystalsvg/*/apps/xedit.png
+%{prefix}/share/icons/crystalsvg/*/apps/xemacs.png
+%{prefix}/share/icons/crystalsvg/*/apps/xeyes.png
+%{prefix}/share/icons/crystalsvg/*/apps/xfig.png
+%{prefix}/share/icons/crystalsvg/*/apps/xload.png
+%{prefix}/share/icons/crystalsvg/*/apps/xmms.png
+%{prefix}/share/icons/crystalsvg/*/apps/xosview.png
+%{prefix}/share/icons/crystalsvg/*/apps/xv.png
+%{prefix}/share/icons/crystalsvg/*/apps/galeon.png
+%{prefix}/share/icons/crystalsvg/*/apps/kcmdrkonqi.png
+%{prefix}/share/icons/crystalsvg/*/apps/pinguin.png
+%{prefix}/share/icons/crystalsvg/*/apps/x.png
+%{prefix}/share/icons/crystalsvg/*/apps/xapp.png
+%{prefix}/share/icons/crystalsvg/*/apps/xawtv.png
+%{prefix}/share/icons/crystalsvg/*/apps/kcmopengl.png
+%{prefix}/share/icons/crystalsvg/*/apps/wmaker_apps.png
+%{prefix}/share/icons/crystalsvg/*/apps/qtella.png
+%{prefix}/share/services/searchproviders
+%{prefix}/share/services/useragentstrings/
+%{prefix}/share/servicetypes/searchprovider.desktop
+%{prefix}/share/servicetypes/uasprovider.desktop
+%exclude %{prefix}/share/sounds/pop.wav
+%{prefix}/share/sounds/
+%{prefix}/share/wallpapers/*
 
 # XDG directories information
 %dir %{_sysconfdir}/xdg/menus/applications-merged
@@ -1298,8 +1282,8 @@ needed for a basic TDE desktop installation.
 %config(noreplace) %{_sysconfdir}/xdg/menus/tde-screensavers.menu
 %config(noreplace) %{_sysconfdir}/xdg/menus/tde-settings.menu
 
-%{tde_tdedocdir}/HTML/en/kcontrol/
-%exclude %{tde_tdedocdir}/HTML/en/kcontrol/kcmkonsole/
+%{prefix}/share/doc/tde/HTML/en/kcontrol/
+%exclude %{prefix}/share/doc/tde/HTML/en/kcontrol/kcmkonsole/
 
 
 %package tdeio-plugins
@@ -1326,151 +1310,151 @@ group.
 
 %files tdeio-plugins
 %defattr(-,root,root,-)
-%{tde_bindir}/tdeio_media_mounthelper
-%{tde_bindir}/ktrash
-%{tde_tdelibdir}/cursorthumbnail.la
-%{tde_tdelibdir}/cursorthumbnail.so
-%{tde_tdelibdir}/djvuthumbnail.la
-%{tde_tdelibdir}/djvuthumbnail.so
-%{tde_tdelibdir}/htmlthumbnail.la
-%{tde_tdelibdir}/htmlthumbnail.so
-%{tde_tdelibdir}/imagethumbnail.la
-%{tde_tdelibdir}/imagethumbnail.so
-%{tde_tdelibdir}/kcm_cgi.la
-%{tde_tdelibdir}/kcm_cgi.so
-%{tde_tdelibdir}/kcm_media.la
-%{tde_tdelibdir}/kcm_media.so
-%{tde_tdelibdir}/kcm_trash.la
-%{tde_tdelibdir}/kcm_trash.so
-%{tde_tdelibdir}/kded_homedirnotify.la
-%{tde_tdelibdir}/kded_homedirnotify.so
-%{tde_tdelibdir}/kded_mediamanager.la
-%{tde_tdelibdir}/kded_mediamanager.so
-%{tde_tdelibdir}/kded_medianotifier.la
-%{tde_tdelibdir}/kded_medianotifier.so
-%{tde_tdelibdir}/kded_remotedirnotify.la
-%{tde_tdelibdir}/kded_remotedirnotify.so
-%{tde_tdelibdir}/kded_systemdirnotify.la
-%{tde_tdelibdir}/kded_systemdirnotify.so
-%{tde_tdelibdir}/tdefile_media.la
-%{tde_tdelibdir}/tdefile_media.so
-%{tde_tdelibdir}/tdefile_trash.la
-%{tde_tdelibdir}/tdefile_trash.so
-%{tde_tdelibdir}/tdeio_about.la
-%{tde_tdelibdir}/tdeio_about.so
-%{tde_tdelibdir}/tdeio_cgi.la
-%{tde_tdelibdir}/tdeio_cgi.so
-%{tde_tdelibdir}/tdeio_filter.la
-%{tde_tdelibdir}/tdeio_filter.so
-%{tde_tdelibdir}/tdeio_finger.la
-%{tde_tdelibdir}/tdeio_finger.so
-%{tde_tdelibdir}/tdeio_fish.la
-%{tde_tdelibdir}/tdeio_fish.so
-%{tde_tdelibdir}/tdeio_floppy.la
-%{tde_tdelibdir}/tdeio_floppy.so
-%{tde_tdelibdir}/tdeio_home.la
-%{tde_tdelibdir}/tdeio_home.so
-%{tde_tdelibdir}/tdeio_info.la
-%{tde_tdelibdir}/tdeio_info.so
-%{tde_tdelibdir}/tdeio_mac.la
-%{tde_tdelibdir}/tdeio_mac.so
-%{tde_tdelibdir}/tdeio_man.la
-%{tde_tdelibdir}/tdeio_man.so
-%{tde_tdelibdir}/tdeio_media.la
-%{tde_tdelibdir}/tdeio_media.so
-%{tde_tdelibdir}/tdeio_nfs.la
-%{tde_tdelibdir}/tdeio_nfs.so
-%{tde_tdelibdir}/tdeio_remote.la
-%{tde_tdelibdir}/tdeio_remote.so
-%{tde_tdelibdir}/tdeio_settings.la
-%{tde_tdelibdir}/tdeio_settings.so
+%{prefix}/bin/tdeio_media_mounthelper
+%{prefix}/bin/ktrash
+%{prefix}/%{_lib}/trinity/cursorthumbnail.la
+%{prefix}/%{_lib}/trinity/cursorthumbnail.so
+%{prefix}/%{_lib}/trinity/djvuthumbnail.la
+%{prefix}/%{_lib}/trinity/djvuthumbnail.so
+%{prefix}/%{_lib}/trinity/htmlthumbnail.la
+%{prefix}/%{_lib}/trinity/htmlthumbnail.so
+%{prefix}/%{_lib}/trinity/imagethumbnail.la
+%{prefix}/%{_lib}/trinity/imagethumbnail.so
+%{prefix}/%{_lib}/trinity/kcm_cgi.la
+%{prefix}/%{_lib}/trinity/kcm_cgi.so
+%{prefix}/%{_lib}/trinity/kcm_media.la
+%{prefix}/%{_lib}/trinity/kcm_media.so
+%{prefix}/%{_lib}/trinity/kcm_trash.la
+%{prefix}/%{_lib}/trinity/kcm_trash.so
+%{prefix}/%{_lib}/trinity/kded_homedirnotify.la
+%{prefix}/%{_lib}/trinity/kded_homedirnotify.so
+%{prefix}/%{_lib}/trinity/kded_mediamanager.la
+%{prefix}/%{_lib}/trinity/kded_mediamanager.so
+%{prefix}/%{_lib}/trinity/kded_medianotifier.la
+%{prefix}/%{_lib}/trinity/kded_medianotifier.so
+%{prefix}/%{_lib}/trinity/kded_remotedirnotify.la
+%{prefix}/%{_lib}/trinity/kded_remotedirnotify.so
+%{prefix}/%{_lib}/trinity/kded_systemdirnotify.la
+%{prefix}/%{_lib}/trinity/kded_systemdirnotify.so
+%{prefix}/%{_lib}/trinity/tdefile_media.la
+%{prefix}/%{_lib}/trinity/tdefile_media.so
+%{prefix}/%{_lib}/trinity/tdefile_trash.la
+%{prefix}/%{_lib}/trinity/tdefile_trash.so
+%{prefix}/%{_lib}/trinity/tdeio_about.la
+%{prefix}/%{_lib}/trinity/tdeio_about.so
+%{prefix}/%{_lib}/trinity/tdeio_cgi.la
+%{prefix}/%{_lib}/trinity/tdeio_cgi.so
+%{prefix}/%{_lib}/trinity/tdeio_filter.la
+%{prefix}/%{_lib}/trinity/tdeio_filter.so
+%{prefix}/%{_lib}/trinity/tdeio_finger.la
+%{prefix}/%{_lib}/trinity/tdeio_finger.so
+%{prefix}/%{_lib}/trinity/tdeio_fish.la
+%{prefix}/%{_lib}/trinity/tdeio_fish.so
+%{prefix}/%{_lib}/trinity/tdeio_floppy.la
+%{prefix}/%{_lib}/trinity/tdeio_floppy.so
+%{prefix}/%{_lib}/trinity/tdeio_home.la
+%{prefix}/%{_lib}/trinity/tdeio_home.so
+%{prefix}/%{_lib}/trinity/tdeio_info.la
+%{prefix}/%{_lib}/trinity/tdeio_info.so
+%{prefix}/%{_lib}/trinity/tdeio_mac.la
+%{prefix}/%{_lib}/trinity/tdeio_mac.so
+%{prefix}/%{_lib}/trinity/tdeio_man.la
+%{prefix}/%{_lib}/trinity/tdeio_man.so
+%{prefix}/%{_lib}/trinity/tdeio_media.la
+%{prefix}/%{_lib}/trinity/tdeio_media.so
+%{prefix}/%{_lib}/trinity/tdeio_nfs.la
+%{prefix}/%{_lib}/trinity/tdeio_nfs.so
+%{prefix}/%{_lib}/trinity/tdeio_remote.la
+%{prefix}/%{_lib}/trinity/tdeio_remote.so
+%{prefix}/%{_lib}/trinity/tdeio_settings.la
+%{prefix}/%{_lib}/trinity/tdeio_settings.so
 %if %{with ssh}
-%{tde_tdelibdir}/tdeio_sftp.la
-%{tde_tdelibdir}/tdeio_sftp.so
+%{prefix}/%{_lib}/trinity/tdeio_sftp.la
+%{prefix}/%{_lib}/trinity/tdeio_sftp.so
 %endif
-%{tde_tdelibdir}/tdeio_system.la
-%{tde_tdelibdir}/tdeio_system.so
-%{tde_tdelibdir}/tdeio_tar.la
-%{tde_tdelibdir}/tdeio_tar.so
-%{tde_tdelibdir}/tdeio_thumbnail.la
-%{tde_tdelibdir}/tdeio_thumbnail.so
-%{tde_tdelibdir}/tdeio_trash.la
-%{tde_tdelibdir}/tdeio_trash.so
-%{tde_tdelibdir}/libkmanpart.la
-%{tde_tdelibdir}/libkmanpart.so
-%{tde_tdelibdir}/textthumbnail.la
-%{tde_tdelibdir}/textthumbnail.so
-%{tde_tdeappdir}/kcmcgi.desktop
-%{tde_datadir}/applications/tde/kcmtrash.desktop
-%{tde_datadir}/apps/tdeio_finger/
-%{tde_datadir}/apps/tdeio_info/
-%{tde_datadir}/apps/tdeio_man/
-%{tde_datadir}/apps/systemview/
-%{tde_datadir}/autostart/mediabackend.desktop
-%{tde_datadir}/config.kcfg/mediamanagersettings.kcfg
-%{tde_datadir}/mimelnk/application/x-smb-server.desktop
-%{tde_datadir}/mimelnk/inode/system_directory.desktop
-%{tde_datadir}/mimelnk/media/*.desktop
-%{tde_datadir}/services/about.protocol
-%{tde_datadir}/services/applications.protocol
-%{tde_datadir}/services/ar.protocol
-%{tde_datadir}/services/bzip.protocol
-%{tde_datadir}/services/bzip2.protocol
-%{tde_datadir}/services/cgi.protocol
-%{tde_datadir}/services/cursorthumbnail.desktop
-%{tde_datadir}/services/djvuthumbnail.desktop
-%{tde_datadir}/services/finger.protocol
-%{tde_datadir}/services/fish.protocol
-%{tde_datadir}/services/floppy.protocol
-%{tde_datadir}/services/gzip.protocol
-%{tde_datadir}/services/home.protocol
-%{tde_datadir}/services/htmlthumbnail.desktop
-%{tde_datadir}/services/imagethumbnail.desktop
-%{tde_datadir}/services/info.protocol
-%{tde_datadir}/services/kded/homedirnotify.desktop
-%{tde_datadir}/services/kded/mediamanager.desktop
-%{tde_datadir}/services/kded/medianotifier.desktop
-%{tde_datadir}/services/kded/remotedirnotify.desktop
-%{tde_datadir}/services/kded/systemdirnotify.desktop
-%{tde_datadir}/services/tdefile_media.desktop
-%{tde_datadir}/services/tdefile_trash_system.desktop
-%{tde_datadir}/services/lzma.protocol
-%{tde_datadir}/services/kmanpart.desktop
-%{tde_datadir}/services/mac.protocol
-%{tde_datadir}/services/man.protocol
-%{tde_datadir}/services/media.protocol
-%{tde_datadir}/services/nfs.protocol
-%{tde_datadir}/services/nxfish.protocol
-%{tde_datadir}/services/programs.protocol
-%{tde_datadir}/services/remote.protocol
-%{tde_datadir}/services/settings.protocol
-%{?with_ssh:%{tde_datadir}/services/sftp.protocol}
-%{tde_datadir}/services/system.protocol
-%{tde_datadir}/services/tar.protocol
-%{tde_datadir}/services/textthumbnail.desktop
-%{tde_datadir}/services/thumbnail.protocol
-%{tde_datadir}/services/trash.protocol
-%{tde_datadir}/services/xz.protocol
-%{tde_datadir}/services/zip.protocol
-%{tde_datadir}/servicetypes/thumbcreator.desktop
-%{tde_datadir}/services/tdefile_trash.desktop
-%{tde_tdedocdir}/HTML/en/tdeioslave/
-%{tde_mandir}/man1/ktrash.1*
-%{tde_mandir}/man1/tdeio_media_mounthelper.1*
+%{prefix}/%{_lib}/trinity/tdeio_system.la
+%{prefix}/%{_lib}/trinity/tdeio_system.so
+%{prefix}/%{_lib}/trinity/tdeio_tar.la
+%{prefix}/%{_lib}/trinity/tdeio_tar.so
+%{prefix}/%{_lib}/trinity/tdeio_thumbnail.la
+%{prefix}/%{_lib}/trinity/tdeio_thumbnail.so
+%{prefix}/%{_lib}/trinity/tdeio_trash.la
+%{prefix}/%{_lib}/trinity/tdeio_trash.so
+%{prefix}/%{_lib}/trinity/libkmanpart.la
+%{prefix}/%{_lib}/trinity/libkmanpart.so
+%{prefix}/%{_lib}/trinity/textthumbnail.la
+%{prefix}/%{_lib}/trinity/textthumbnail.so
+%{prefix}/share/applications/tde/kcmcgi.desktop
+%{prefix}/share/applications/tde/kcmtrash.desktop
+%{prefix}/share/apps/tdeio_finger/
+%{prefix}/share/apps/tdeio_info/
+%{prefix}/share/apps/tdeio_man/
+%{prefix}/share/apps/systemview/
+%{prefix}/share/autostart/mediabackend.desktop
+%{prefix}/share/config.kcfg/mediamanagersettings.kcfg
+%{prefix}/share/mimelnk/application/x-smb-server.desktop
+%{prefix}/share/mimelnk/inode/system_directory.desktop
+%{prefix}/share/mimelnk/media/*.desktop
+%{prefix}/share/services/about.protocol
+%{prefix}/share/services/applications.protocol
+%{prefix}/share/services/ar.protocol
+%{prefix}/share/services/bzip.protocol
+%{prefix}/share/services/bzip2.protocol
+%{prefix}/share/services/cgi.protocol
+%{prefix}/share/services/cursorthumbnail.desktop
+%{prefix}/share/services/djvuthumbnail.desktop
+%{prefix}/share/services/finger.protocol
+%{prefix}/share/services/fish.protocol
+%{prefix}/share/services/floppy.protocol
+%{prefix}/share/services/gzip.protocol
+%{prefix}/share/services/home.protocol
+%{prefix}/share/services/htmlthumbnail.desktop
+%{prefix}/share/services/imagethumbnail.desktop
+%{prefix}/share/services/info.protocol
+%{prefix}/share/services/kded/homedirnotify.desktop
+%{prefix}/share/services/kded/mediamanager.desktop
+%{prefix}/share/services/kded/medianotifier.desktop
+%{prefix}/share/services/kded/remotedirnotify.desktop
+%{prefix}/share/services/kded/systemdirnotify.desktop
+%{prefix}/share/services/tdefile_media.desktop
+%{prefix}/share/services/tdefile_trash_system.desktop
+%{prefix}/share/services/lzma.protocol
+%{prefix}/share/services/kmanpart.desktop
+%{prefix}/share/services/mac.protocol
+%{prefix}/share/services/man.protocol
+%{prefix}/share/services/media.protocol
+%{prefix}/share/services/nfs.protocol
+%{prefix}/share/services/nxfish.protocol
+%{prefix}/share/services/programs.protocol
+%{prefix}/share/services/remote.protocol
+%{prefix}/share/services/settings.protocol
+%{?with_ssh:%{prefix}/share/services/sftp.protocol}
+%{prefix}/share/services/system.protocol
+%{prefix}/share/services/tar.protocol
+%{prefix}/share/services/textthumbnail.desktop
+%{prefix}/share/services/thumbnail.protocol
+%{prefix}/share/services/trash.protocol
+%{prefix}/share/services/xz.protocol
+%{prefix}/share/services/zip.protocol
+%{prefix}/share/servicetypes/thumbcreator.desktop
+%{prefix}/share/services/tdefile_trash.desktop
+%{prefix}/share/doc/tde/HTML/en/tdeioslave/
+%{prefix}/share/man/man1/ktrash.1*
+%{prefix}/share/man/man1/tdeio_media_mounthelper.1*
 %if %{with openexr}
-%{tde_tdelibdir}/exrthumbnail.la
-%{tde_tdelibdir}/exrthumbnail.so
-%{tde_datadir}/services/exrthumbnail.desktop
+%{prefix}/%{_lib}/trinity/exrthumbnail.la
+%{prefix}/%{_lib}/trinity/exrthumbnail.so
+%{prefix}/share/services/exrthumbnail.desktop
 %endif
 
 # HWManager
-%{tde_tdelibdir}/media_propsdlgplugin.la
-%{tde_tdelibdir}/media_propsdlgplugin.so
-%{tde_datadir}/services/media_propsdlgplugin.desktop
+%{prefix}/%{_lib}/trinity/media_propsdlgplugin.la
+%{prefix}/%{_lib}/trinity/media_propsdlgplugin.so
+%{prefix}/share/services/media_propsdlgplugin.desktop
 
-%{tde_tdelibdir}/ktrashpropsdlgplugin.la
-%{tde_tdelibdir}/ktrashpropsdlgplugin.so
-%{tde_datadir}/services/ktrashpropsdlgplugin.desktop
+%{prefix}/%{_lib}/trinity/ktrashpropsdlgplugin.la
+%{prefix}/%{_lib}/trinity/ktrashpropsdlgplugin.so
+%{prefix}/share/services/ktrashpropsdlgplugin.desktop
 
 ##########
 
@@ -1487,14 +1471,14 @@ system passwords.
 
 %files -n trinity-tdepasswd
 %defattr(-,root,root,-)
-%{tde_bindir}/tdepasswd
-%{tde_tdelibdir}/kcm_useraccount.la
-%{tde_tdelibdir}/kcm_useraccount.so
-%{tde_tdeappdir}/kcm_useraccount.desktop
-%{tde_tdeappdir}/tdepasswd.desktop
-%{tde_datadir}/config.kcfg/kcm_useraccount.kcfg
-%{tde_datadir}/config.kcfg/kcm_useraccount_pass.kcfg
-%{tde_tdedocdir}/HTML/en/tdepasswd/
+%{prefix}/bin/tdepasswd
+%{prefix}/%{_lib}/trinity/kcm_useraccount.la
+%{prefix}/%{_lib}/trinity/kcm_useraccount.so
+%{prefix}/share/applications/tde/kcm_useraccount.desktop
+%{prefix}/share/applications/tde/tdepasswd.desktop
+%{prefix}/share/config.kcfg/kcm_useraccount.kcfg
+%{prefix}/share/config.kcfg/kcm_useraccount_pass.kcfg
+%{prefix}/share/doc/tde/HTML/en/tdepasswd/
 %{_datadir}/faces/Apple.png
 %{_datadir}/faces/BeachBall.png
 %{_datadir}/faces/Blowfish.png
@@ -1523,7 +1507,7 @@ system passwords.
 %{_datadir}/faces/Star.png
 %{_datadir}/faces/Teddybear.png
 %{_datadir}/faces/Turtle.png
-%{tde_mandir}/man1/tdepasswd.1*
+%{prefix}/share/man/man1/tdepasswd.1*
 
 ##########
 
@@ -1542,53 +1526,53 @@ Installation of smbclient will make you able to use smb shared printers.
 
 %files -n trinity-tdeprint
 %defattr(-,root,root,-)
-%{tde_bindir}/tdeprintfax
-%{tde_bindir}/kjobviewer
-%{tde_bindir}/kprinter
-%{tde_tdelibdir}/kcm_printmgr.la
-%{tde_tdelibdir}/kcm_printmgr.so
-%{tde_tdelibdir}/tdeio_print.la
-%{tde_tdelibdir}/tdeio_print.so
-%{tde_tdelibdir}/kjobviewer.la
-%{tde_tdelibdir}/kjobviewer.so
-%{tde_tdelibdir}/kprinter.la
-%{tde_tdelibdir}/kprinter.so
-%{tde_tdelibdir}/libtdeprint_part.la
-%{tde_tdelibdir}/libtdeprint_part.so
-%{tde_libdir}/libtdeinit_kjobviewer.la
-%{tde_libdir}/libtdeinit_kjobviewer.so
-%{tde_libdir}/libtdeinit_kprinter.la
-%{tde_libdir}/libtdeinit_kprinter.so
-%{tde_tdeappdir}/tdeprintfax.desktop
-%{tde_tdeappdir}/kjobviewer.desktop
-%{tde_tdeappdir}/printers.desktop
-%{tde_datadir}/apps/tdeprint/
-%{tde_datadir}/apps/tdeprintfax/
-%{tde_datadir}/apps/kjobviewer/
-%{tde_datadir}/apps/tdeprint_part/
-%{tde_datadir}/autostart/kjobviewer-autostart.desktop
-%{tde_datadir}/icons/hicolor/*/apps/tdeprintfax.png
-%{tde_datadir}/icons/hicolor/*/apps/kjobviewer.png
-%{tde_datadir}/icons/hicolor/*/apps/printmgr.png
-%{tde_datadir}/icons/hicolor/scalable/apps/tdeprintfax.svgz
-%{tde_datadir}/icons/hicolor/scalable/apps/kjobviewer.svgz
-%{tde_datadir}/icons/hicolor/scalable/apps/printmgr.svgz
-%{tde_datadir}/mimelnk/print/class.desktop
-%{tde_datadir}/mimelnk/print/driver.desktop
-%{tde_datadir}/mimelnk/print/folder.desktop
-%{tde_datadir}/mimelnk/print/jobs.desktop
-%{tde_datadir}/mimelnk/print/manager.desktop
-%{tde_datadir}/mimelnk/print/printer.desktop
-%{tde_datadir}/mimelnk/print/printermodel.desktop
-%{tde_datadir}/services/tdeprint_part.desktop
-%{tde_datadir}/services/print.protocol
-%{tde_datadir}/services/printdb.protocol
-%{tde_tdedocdir}/HTML/en/tdeprint/
-%{tde_tdedocdir}/HTML/en/tdeprintfax/
-%{tde_tdedocdir}/HTML/en/kjobviewer/
-%{tde_mandir}/man1/kjobviewer.1*
-%{tde_mandir}/man1/kprinter.1*
-%{tde_mandir}/man1/tdeprintfax.1*
+%{prefix}/bin/tdeprintfax
+%{prefix}/bin/kjobviewer
+%{prefix}/bin/kprinter
+%{prefix}/%{_lib}/trinity/kcm_printmgr.la
+%{prefix}/%{_lib}/trinity/kcm_printmgr.so
+%{prefix}/%{_lib}/trinity/tdeio_print.la
+%{prefix}/%{_lib}/trinity/tdeio_print.so
+%{prefix}/%{_lib}/trinity/kjobviewer.la
+%{prefix}/%{_lib}/trinity/kjobviewer.so
+%{prefix}/%{_lib}/trinity/kprinter.la
+%{prefix}/%{_lib}/trinity/kprinter.so
+%{prefix}/%{_lib}/trinity/libtdeprint_part.la
+%{prefix}/%{_lib}/trinity/libtdeprint_part.so
+%{prefix}/%{_lib}/libtdeinit_kjobviewer.la
+%{prefix}/%{_lib}/libtdeinit_kjobviewer.so
+%{prefix}/%{_lib}/libtdeinit_kprinter.la
+%{prefix}/%{_lib}/libtdeinit_kprinter.so
+%{prefix}/share/applications/tde/tdeprintfax.desktop
+%{prefix}/share/applications/tde/kjobviewer.desktop
+%{prefix}/share/applications/tde/printers.desktop
+%{prefix}/share/apps/tdeprint/
+%{prefix}/share/apps/tdeprintfax/
+%{prefix}/share/apps/kjobviewer/
+%{prefix}/share/apps/tdeprint_part/
+%{prefix}/share/autostart/kjobviewer-autostart.desktop
+%{prefix}/share/icons/hicolor/*/apps/tdeprintfax.png
+%{prefix}/share/icons/hicolor/*/apps/kjobviewer.png
+%{prefix}/share/icons/hicolor/*/apps/printmgr.png
+%{prefix}/share/icons/hicolor/scalable/apps/tdeprintfax.svgz
+%{prefix}/share/icons/hicolor/scalable/apps/kjobviewer.svgz
+%{prefix}/share/icons/hicolor/scalable/apps/printmgr.svgz
+%{prefix}/share/mimelnk/print/class.desktop
+%{prefix}/share/mimelnk/print/driver.desktop
+%{prefix}/share/mimelnk/print/folder.desktop
+%{prefix}/share/mimelnk/print/jobs.desktop
+%{prefix}/share/mimelnk/print/manager.desktop
+%{prefix}/share/mimelnk/print/printer.desktop
+%{prefix}/share/mimelnk/print/printermodel.desktop
+%{prefix}/share/services/tdeprint_part.desktop
+%{prefix}/share/services/print.protocol
+%{prefix}/share/services/printdb.protocol
+%{prefix}/share/doc/tde/HTML/en/tdeprint/
+%{prefix}/share/doc/tde/HTML/en/tdeprintfax/
+%{prefix}/share/doc/tde/HTML/en/kjobviewer/
+%{prefix}/share/man/man1/kjobviewer.1*
+%{prefix}/share/man/man1/kprinter.1*
+%{prefix}/share/man/man1/tdeprintfax.1*
 
 ##########
 
@@ -1609,24 +1593,24 @@ the TDE desktop.
 
 %files -n trinity-kdesktop
 %defattr(-,root,root,-)
-%config(noreplace) %{tde_confdir}/kdesktop_custom_menu1
-%config(noreplace) %{tde_confdir}/kdesktop_custom_menu2
-%{tde_bindir}/kcheckrunning
-%{tde_bindir}/tdeeject
-%{tde_bindir}/kdesktop
-%{tde_bindir}/kdesktop_lock
-%{tde_bindir}/kwebdesktop
-%{tde_tdelibdir}/kdesktop.la
-%{tde_tdelibdir}/kdesktop.so
-%{tde_libdir}/libtdeinit_kdesktop.la
-%{tde_libdir}/libtdeinit_kdesktop.so
-%{tde_datadir}/apps/kdesktop/
-%{tde_datadir}/apps/konqueror/servicemenus/kdesktopSetAsBackground.desktop
-%{tde_datadir}/autostart/kdesktop.desktop
-%{tde_datadir}/config.kcfg/kdesktop.kcfg
-%{tde_datadir}/config.kcfg/tdelaunch.kcfg
-%{tde_datadir}/config.kcfg/kwebdesktop.kcfg
-%{tde_datadir}/icons/crystalsvg/*/apps/error.png
+%config(noreplace) %{_sysconfdir}/trinity/kdesktop_custom_menu1
+%config(noreplace) %{_sysconfdir}/trinity/kdesktop_custom_menu2
+%{prefix}/bin/kcheckrunning
+%{prefix}/bin/tdeeject
+%{prefix}/bin/kdesktop
+%{prefix}/bin/kdesktop_lock
+%{prefix}/bin/kwebdesktop
+%{prefix}/%{_lib}/trinity/kdesktop.la
+%{prefix}/%{_lib}/trinity/kdesktop.so
+%{prefix}/%{_lib}/libtdeinit_kdesktop.la
+%{prefix}/%{_lib}/libtdeinit_kdesktop.so
+%{prefix}/share/apps/kdesktop/
+%{prefix}/share/apps/konqueror/servicemenus/kdesktopSetAsBackground.desktop
+%{prefix}/share/autostart/kdesktop.desktop
+%{prefix}/share/config.kcfg/kdesktop.kcfg
+%{prefix}/share/config.kcfg/tdelaunch.kcfg
+%{prefix}/share/config.kcfg/kwebdesktop.kcfg
+%{prefix}/share/icons/crystalsvg/*/apps/error.png
 
 ##########
 
@@ -1640,9 +1624,9 @@ This package contains the development files for kdesktop.
 
 %files -n trinity-kdesktop-devel
 %defattr(-,root,root,-)
-%{tde_tdeincludedir}/KBackgroundIface.h
-%{tde_tdeincludedir}/KDesktopIface.h
-%{tde_tdeincludedir}/KScreensaverIface.h
+%{prefix}/include/tde/KBackgroundIface.h
+%{prefix}/include/tde/KDesktopIface.h
+%{prefix}/include/tde/KScreensaverIface.h
 
 ##########
 
@@ -1657,7 +1641,7 @@ Requires:	logrotate
 # Provides the global Xsession script (/etc/X11/xinit/Xsession or /etc/X11/Xsession)
 Requires:	xinitrc
 Provides:	dm
-Provides:	%{tdm}
+Provides:	tdm
 
 %description -n trinity-tdm
 TDM manages a collection of X servers, which may be on the local host or
@@ -1677,33 +1661,33 @@ already. Most users won't need this.
 
 %files -n trinity-tdm
 %defattr(-,root,root,-)
-%{tde_tdelibdir}/kgreet_pam.la
-%{tde_tdelibdir}/kgreet_pam.so
-%{tde_bindir}/gen%{tdm}conf
-%{tde_bindir}/%{tdm}
-%{tde_bindir}/%{tdm}_config
-%{tde_bindir}/%{tdm}ctl
-%{tde_bindir}/%{tdm}_greet
-%{tde_bindir}/krootimage
-%dir %{tdm_datadir}
-%dir %{tdm_datadir}/pics
-%{tdm_datadir}/pics/tdelogo.png
-%{tdm_datadir}/pics/shutdown.jpg
-%{tdm_datadir}/pics/users
-%dir %{tdm_datadir}/sessions
-%{tdm_datadir}/sessions/*.desktop
-%{tdm_datadir}/themes/
-%config(noreplace) %{tde_confdir}/%{tdm}
-%{tde_tdedocdir}/HTML/en/%{tdm}/
+%{prefix}/%{_lib}/trinity/kgreet_pam.la
+%{prefix}/%{_lib}/trinity/kgreet_pam.so
+%{prefix}/bin/gentdmconf
+%{prefix}/bin/tdm
+%{prefix}/bin/tdm_config
+%{prefix}/bin/tdmctl
+%{prefix}/bin/tdm_greet
+%{prefix}/bin/krootimage
+%dir %{prefix}/share/apps/tdm
+%dir %{prefix}/share/apps/tdm/pics
+%{prefix}/share/apps/tdm/pics/tdelogo.png
+%{prefix}/share/apps/tdm/pics/shutdown.jpg
+%{prefix}/share/apps/tdm/pics/users
+%dir %{prefix}/share/apps/tdm/sessions
+%{prefix}/share/apps/tdm/sessions/*.desktop
+%{prefix}/share/apps/tdm/themes/
+%config(noreplace) %{_sysconfdir}/trinity/tdm
+%{prefix}/share/doc/tde/HTML/en/tdm/
 %config(noreplace) %{_sysconfdir}/pam.d/tdm-trinity
 %config(noreplace) %{_sysconfdir}/pam.d/tdm-trinity-np
-%{tde_mandir}/man1/gentdmconf.1*
-%{tde_mandir}/man1/krootimage.1*
-%{tde_mandir}/man1/tdm.1*
-%{tde_mandir}/man1/tdmctl.1*
-%{tde_mandir}/man1/tdm_config.1*
-%{tde_mandir}/man1/tdm_greet.1*
-%{tde_bindir}/tdecryptocardwatcher
+%{prefix}/share/man/man1/gentdmconf.1*
+%{prefix}/share/man/man1/krootimage.1*
+%{prefix}/share/man/man1/tdm.1*
+%{prefix}/share/man/man1/tdmctl.1*
+%{prefix}/share/man/man1/tdm_config.1*
+%{prefix}/share/man/man1/tdm_greet.1*
+%{prefix}/bin/tdecryptocardwatcher
 
 # XDG user faces
 %dir %{_datadir}/faces
@@ -1725,49 +1709,49 @@ already. Most users won't need this.
 
 %pre -n trinity-tdm
 # Make sure that TDM configuration files are now under '/etc/trinity/tdm'
-if [ -d "%{tde_datadir}/config/%{tdm}" ] && [ ! -L "%{tde_datadir}/config/%{tdm}" ]; then
-  if [ -d "%{tde_confdir}/%{tdm}" ]; then
+if [ -d "%{prefix}/share/config/tdm" ] && [ ! -L "%{prefix}/share/config/tdm" ]; then
+  if [ -d "%{_sysconfdir}/trinity/tdm" ]; then
     # If there is already something under '/etc/trinity/tdm', simply delete old configuration
-    echo "Deleting TDM configuration under '%{tde_datadir}/config/%{tdm}'"
-    rm -rf "%{tde_datadir}/config/%{tdm}"
+    echo "Deleting TDM configuration under '%{prefix}/share/config/tdm'"
+    rm -rf "%{prefix}/share/config/tdm"
   else
     # Else, move '/opt/trinity/share/config/tdm' to '/etc/trinity/tdm'
-    if [ ! -d "%{tde_confdir}" ]; then
-      mkdir -p "%{tde_confdir}"
+    if [ ! -d "%{_sysconfdir}/trinity" ]; then
+      mkdir -p "%{_sysconfdir}/trinity"
     fi
-    echo "Migrating TDM configuration from '%{tde_datadir}/config/%{tdm}' to '%{tde_confdir}/%{tdm}'"
-    mv -f "%{tde_datadir}/config/%{tdm}" "%{tde_confdir}/%{tdm}.migr"
+    echo "Migrating TDM configuration from '%{prefix}/share/config/tdm' to '%{_sysconfdir}/trinity/tdm'"
+    mv -f "%{prefix}/share/config/tdm" "%{_sysconfdir}/trinity/tdm.migr"
   fi
 fi
 
 # Remove actual directory before creating a symlink
-if [ ! -L "%{tdm_datadir}/pics/users" ] && [ -d "%{tdm_datadir}/pics/users" ] ; then
+if [ ! -L "%{prefix}/share/apps/tdm/pics/users" ] && [ -d "%{prefix}/share/apps/tdm/pics/users" ] ; then
   [ -d "%{_datadir}/faces" ] || mkdir -p "%{_datadir}/faces"
-  cp -f "%{tdm_datadir}/pics/users/"* "%{_datadir}/faces"
-  rm -rf "%{tdm_datadir}/pics/users"
+  cp -f "%{prefix}/share/apps/tdm/pics/users/"* "%{_datadir}/faces"
+  rm -rf "%{prefix}/share/apps/tdm/pics/users"
 fi
 
 %post -n trinity-tdm
 %make_session
 
 # Sets default user icon in TDM
-if [ ! -r "%{tdm_datadir}/faces/.default.face.icon" ]; then
-  [ -d "%{tdm_datadir}/faces" ] || mkdir -p "%{tdm_datadir}/faces"
-  cp -f "%{tdm_datadir}/pics/users/default2.png" "%{tdm_datadir}/faces/.default.face.icon"
+if [ ! -r "%{prefix}/share/apps/tdm/faces/.default.face.icon" ]; then
+  [ -d "%{prefix}/share/apps/tdm/faces" ] || mkdir -p "%{prefix}/share/apps/tdm/faces"
+  cp -f "%{prefix}/share/apps/tdm/pics/users/default2.png" "%{prefix}/share/apps/tdm/faces/.default.face.icon"
 fi
 
 # Sets default language for TDM
 if [ "$1" = "1" ]; then
   if [ -n "${LANG}" ] && [ "${LANG}" != "C" ]; then
-    sed -i "%{tde_confdir}/%{tdm}/%{tdm}rc" -e "s|^#*Language=.*|Language=${LANG}|"
+    sed -i "%{_sysconfdir}/trinity/tdm/tdmrc" -e "s|^#*Language=.*|Language=${LANG}|"
   fi
 fi
 
 %posttrans -n trinity-tdm
 # Make sure that TDM configuration files are now under '/etc/trinity/tdm'
-if [ -d "%{tde_confdir}/%{tdm}.migr" ] && [ -d "%{tde_confdir}/%{tdm}" ]; then
-  mv -f "%{tde_confdir}/%{tdm}.migr/"* "%{tde_confdir}/%{tdm}/"
-  rmdir "%{tde_confdir}/%{tdm}.migr/"
+if [ -d "%{_sysconfdir}/trinity/tdm.migr" ] && [ -d "%{_sysconfdir}/trinity/tdm" ]; then
+  mv -f "%{_sysconfdir}/trinity/tdm.migr/"* "%{_sysconfdir}/trinity/tdm/"
+  rmdir "%{_sysconfdir}/trinity/tdm.migr/"
 fi
 
 %postun -n trinity-tdm
@@ -1784,7 +1768,7 @@ This package contains the development files for TDM.
 
 %files -n trinity-tdm-devel
 %defattr(-,root,root,-)
-%{tde_tdeincludedir}/kgreeterplugin.h
+%{prefix}/include/tde/kgreeterplugin.h
 
 ##########
 
@@ -1799,16 +1783,16 @@ workstations.
 
 %files -n trinity-kfind
 %defattr(-,root,root,-)
-%{tde_bindir}/kfind
-%{tde_tdelibdir}/libkfindpart.la
-%{tde_tdelibdir}/libkfindpart.so
-%{tde_tdeappdir}/Kfind.desktop
-%{tde_datadir}/apps/kfindpart/
-%{tde_datadir}/icons/hicolor/*/apps/kfind.png
-%{tde_datadir}/services/kfindpart.desktop
-%{tde_datadir}/servicetypes/findpart.desktop
-%{tde_tdedocdir}/HTML/en/kfind/
-%{tde_mandir}/man1/kfind.1*
+%{prefix}/bin/kfind
+%{prefix}/%{_lib}/trinity/libkfindpart.la
+%{prefix}/%{_lib}/trinity/libkfindpart.so
+%{prefix}/share/applications/tde/Kfind.desktop
+%{prefix}/share/apps/kfindpart/
+%{prefix}/share/icons/hicolor/*/apps/kfind.png
+%{prefix}/share/services/kfindpart.desktop
+%{prefix}/share/servicetypes/findpart.desktop
+%{prefix}/share/doc/tde/HTML/en/kfind/
+%{prefix}/share/man/man1/kfind.1*
 
 ##########
 
@@ -1826,22 +1810,22 @@ documentation.
 
 %files -n trinity-khelpcenter
 %defattr(-,root,root,-)
-%{tde_bindir}/khc_docbookdig.pl
-%{tde_bindir}/khc_htdig.pl
-%{tde_bindir}/khc_htsearch.pl
-%{tde_bindir}/khc_indexbuilder
-%{tde_bindir}/khc_mansearch.pl
-%{tde_bindir}/khelpcenter
-%{tde_tdelibdir}/khelpcenter.la
-%{tde_tdelibdir}/khelpcenter.so
-%{tde_libdir}/libtdeinit_khelpcenter.la
-%{tde_libdir}/libtdeinit_khelpcenter.so
-%{tde_tdeappdir}/Help.desktop
-%{tde_datadir}/apps/khelpcenter/
-%{tde_datadir}/config.kcfg/khelpcenter.kcfg
-%{tde_datadir}/icons/hicolor/*/apps/khelpcenter.*
-%{tde_datadir}/services/khelpcenter.desktop
-%{tde_tdedocdir}/HTML/en/khelpcenter/
+%{prefix}/bin/khc_docbookdig.pl
+%{prefix}/bin/khc_htdig.pl
+%{prefix}/bin/khc_htsearch.pl
+%{prefix}/bin/khc_indexbuilder
+%{prefix}/bin/khc_mansearch.pl
+%{prefix}/bin/khelpcenter
+%{prefix}/%{_lib}/trinity/khelpcenter.la
+%{prefix}/%{_lib}/trinity/khelpcenter.so
+%{prefix}/%{_lib}/libtdeinit_khelpcenter.la
+%{prefix}/%{_lib}/libtdeinit_khelpcenter.so
+%{prefix}/share/applications/tde/Help.desktop
+%{prefix}/share/apps/khelpcenter/
+%{prefix}/share/config.kcfg/khelpcenter.kcfg
+%{prefix}/share/icons/hicolor/*/apps/khelpcenter.*
+%{prefix}/share/services/khelpcenter.desktop
+%{prefix}/share/doc/tde/HTML/en/khelpcenter/
 
 ##########
 
@@ -1857,108 +1841,108 @@ functionality.
 
 %files -n trinity-kicker
 %defattr(-,root,root,-)
-%{tde_bindir}/appletproxy
-%{tde_bindir}/extensionproxy
-%{tde_bindir}/kasbar
-%{tde_bindir}/kicker
-%{tde_libdir}/tdeconf_update_bin/kicker-3.4-reverseLayout
-%{tde_tdelibdir}/appletproxy.la
-%{tde_tdelibdir}/appletproxy.so
-%{tde_tdelibdir}/clock_panelapplet.la
-%{tde_tdelibdir}/clock_panelapplet.so
-%{tde_tdelibdir}/dockbar_panelextension.la
-%{tde_tdelibdir}/dockbar_panelextension.so
-%{tde_tdelibdir}/extensionproxy.la
-%{tde_tdelibdir}/extensionproxy.so
-%{tde_tdelibdir}/kasbar_panelextension.la
-%{tde_tdelibdir}/kasbar_panelextension.so
-%{tde_tdelibdir}/kicker.la
-%{tde_tdelibdir}/kickermenu_find.la
-%{tde_tdelibdir}/kickermenu_find.so
-%{tde_tdelibdir}/kickermenu_kate.so
-%{tde_tdelibdir}/kickermenu_kate.la
-%{tde_tdelibdir}/kickermenu_tdeprint.la
-%{tde_tdelibdir}/kickermenu_tdeprint.so
-%{tde_tdelibdir}/kickermenu_konqueror.la
-%{tde_tdelibdir}/kickermenu_konqueror.so
-%{tde_tdelibdir}/kickermenu_konsole.la
-%{tde_tdelibdir}/kickermenu_konsole.so
-%{tde_tdelibdir}/kickermenu_prefmenu.la
-%{tde_tdelibdir}/kickermenu_prefmenu.so
-%{tde_tdelibdir}/kickermenu_recentdocs.la
-%{tde_tdelibdir}/kickermenu_recentdocs.so
-%{tde_tdelibdir}/kickermenu_remotemenu.la
-%{tde_tdelibdir}/kickermenu_remotemenu.so
-%{tde_tdelibdir}/kickermenu_systemmenu.la
-%{tde_tdelibdir}/kickermenu_systemmenu.so
-%{tde_tdelibdir}/kicker.so
-%{tde_tdelibdir}/launcher_panelapplet.la
-%{tde_tdelibdir}/launcher_panelapplet.so
-%{tde_tdelibdir}/lockout_panelapplet.la
-%{tde_tdelibdir}/lockout_panelapplet.so
-%{tde_tdelibdir}/media_panelapplet.la
-%{tde_tdelibdir}/media_panelapplet.so
-%{tde_tdelibdir}/menu_panelapplet.la
-%{tde_tdelibdir}/menu_panelapplet.so
-%{tde_tdelibdir}/minipager_panelapplet.la
-%{tde_tdelibdir}/minipager_panelapplet.so
-%{tde_tdelibdir}/naughty_panelapplet.la
-%{tde_tdelibdir}/naughty_panelapplet.so
-%{tde_tdelibdir}/run_panelapplet.la
-%{tde_tdelibdir}/run_panelapplet.so
-%{tde_tdelibdir}/sidebar_panelextension.la
-%{tde_tdelibdir}/sidebar_panelextension.so
-%{tde_tdelibdir}/systemtray_panelapplet.la
-%{tde_tdelibdir}/systemtray_panelapplet.so
-%{tde_tdelibdir}/taskbar_panelapplet.la
-%{tde_tdelibdir}/taskbar_panelapplet.so
-%{tde_tdelibdir}/taskbar_panelextension.la
-%{tde_tdelibdir}/taskbar_panelextension.so
-%{tde_tdelibdir}/trash_panelapplet.la
-%{tde_tdelibdir}/trash_panelapplet.so
-%{tde_libdir}/libkasbar.so.*
-%{tde_libdir}/libtdeinit_appletproxy.la
-%{tde_libdir}/libtdeinit_appletproxy.so
-%{tde_libdir}/libtdeinit_extensionproxy.la
-%{tde_libdir}/libtdeinit_extensionproxy.so
-%{tde_libdir}/libtdeinit_kicker.la
-%{tde_libdir}/libtdeinit_kicker.so
-%{tde_libdir}/libkickermain.so.*
-%{tde_libdir}/libtaskbar.so.*
-%{tde_libdir}/libtaskmanager.so.*
-%{tde_libdir}/libkickoffsearch_interfaces.so.*
-%{tde_tdeappdir}/kcmkicker.desktop
-%{tde_datadir}/applnk/.hidden/kicker_config_arrangement.desktop
-%{tde_datadir}/applnk/.hidden/kicker_config_hiding.desktop
-%{tde_datadir}/applnk/.hidden/kicker_config_menus.desktop
-%{tde_datadir}/apps/clockapplet/
-%{tde_datadir}/apps/tdeconf_update/kicker-3.1-properSizeSetting.pl
-%{tde_datadir}/apps/tdeconf_update/kicker-3.5-taskbarEnums.pl
-%{tde_datadir}/apps/tdeconf_update/kickerrc.upd
-%{tde_datadir}/apps/kicker/
-%exclude %{tde_datadir}/apps/kicker/applets/klipper.desktop
-%exclude %{tde_datadir}/apps/kicker/applets/ksysguardapplet.desktop
-%{tde_datadir}/apps/naughtyapplet/
-%{tde_datadir}/autostart/panel.desktop
-%{tde_datadir}/config.kcfg/kickerSettings.kcfg
-%{tde_datadir}/config.kcfg/launcherapplet.kcfg
-%{tde_datadir}/config.kcfg/pagersettings.kcfg
-%{tde_datadir}/config.kcfg/taskbar.kcfg
-%{tde_datadir}/icons/crystalsvg/*/apps/systemtray.png
-%{tde_datadir}/icons/crystalsvg/*/apps/taskbar.png
-%{tde_datadir}/icons/crystalsvg/*/apps/kbinaryclock.png
-%{tde_datadir}/icons/crystalsvg/*/apps/kdisknav.png
-%{tde_datadir}/icons/crystalsvg/*/apps/kicker.png
-%{tde_datadir}/icons/crystalsvg/*/apps/panel.png
-%{tde_datadir}/icons/crystalsvg/*/apps/runprocesscatcher.png
-%{tde_datadir}/icons/crystalsvg/*/apps/kbinaryclock.svgz
-%{tde_datadir}/icons/crystalsvg/*/apps/systemtray.svgz
-%{tde_datadir}/servicetypes/kickoffsearchplugin.desktop
-%{tde_tdedocdir}/HTML/en/kicker/
-%{tde_mandir}/man1/appletproxy.1*
-%{tde_mandir}/man1/extensionproxy.1*
-%{tde_mandir}/man1/kasbar.1*
-%{tde_mandir}/man1/kicker.1*
+%{prefix}/bin/appletproxy
+%{prefix}/bin/extensionproxy
+%{prefix}/bin/kasbar
+%{prefix}/bin/kicker
+%{prefix}/%{_lib}/tdeconf_update_bin/kicker-3.4-reverseLayout
+%{prefix}/%{_lib}/trinity/appletproxy.la
+%{prefix}/%{_lib}/trinity/appletproxy.so
+%{prefix}/%{_lib}/trinity/clock_panelapplet.la
+%{prefix}/%{_lib}/trinity/clock_panelapplet.so
+%{prefix}/%{_lib}/trinity/dockbar_panelextension.la
+%{prefix}/%{_lib}/trinity/dockbar_panelextension.so
+%{prefix}/%{_lib}/trinity/extensionproxy.la
+%{prefix}/%{_lib}/trinity/extensionproxy.so
+%{prefix}/%{_lib}/trinity/kasbar_panelextension.la
+%{prefix}/%{_lib}/trinity/kasbar_panelextension.so
+%{prefix}/%{_lib}/trinity/kicker.la
+%{prefix}/%{_lib}/trinity/kickermenu_find.la
+%{prefix}/%{_lib}/trinity/kickermenu_find.so
+%{prefix}/%{_lib}/trinity/kickermenu_kate.so
+%{prefix}/%{_lib}/trinity/kickermenu_kate.la
+%{prefix}/%{_lib}/trinity/kickermenu_tdeprint.la
+%{prefix}/%{_lib}/trinity/kickermenu_tdeprint.so
+%{prefix}/%{_lib}/trinity/kickermenu_konqueror.la
+%{prefix}/%{_lib}/trinity/kickermenu_konqueror.so
+%{prefix}/%{_lib}/trinity/kickermenu_konsole.la
+%{prefix}/%{_lib}/trinity/kickermenu_konsole.so
+%{prefix}/%{_lib}/trinity/kickermenu_prefmenu.la
+%{prefix}/%{_lib}/trinity/kickermenu_prefmenu.so
+%{prefix}/%{_lib}/trinity/kickermenu_recentdocs.la
+%{prefix}/%{_lib}/trinity/kickermenu_recentdocs.so
+%{prefix}/%{_lib}/trinity/kickermenu_remotemenu.la
+%{prefix}/%{_lib}/trinity/kickermenu_remotemenu.so
+%{prefix}/%{_lib}/trinity/kickermenu_systemmenu.la
+%{prefix}/%{_lib}/trinity/kickermenu_systemmenu.so
+%{prefix}/%{_lib}/trinity/kicker.so
+%{prefix}/%{_lib}/trinity/launcher_panelapplet.la
+%{prefix}/%{_lib}/trinity/launcher_panelapplet.so
+%{prefix}/%{_lib}/trinity/lockout_panelapplet.la
+%{prefix}/%{_lib}/trinity/lockout_panelapplet.so
+%{prefix}/%{_lib}/trinity/media_panelapplet.la
+%{prefix}/%{_lib}/trinity/media_panelapplet.so
+%{prefix}/%{_lib}/trinity/menu_panelapplet.la
+%{prefix}/%{_lib}/trinity/menu_panelapplet.so
+%{prefix}/%{_lib}/trinity/minipager_panelapplet.la
+%{prefix}/%{_lib}/trinity/minipager_panelapplet.so
+%{prefix}/%{_lib}/trinity/naughty_panelapplet.la
+%{prefix}/%{_lib}/trinity/naughty_panelapplet.so
+%{prefix}/%{_lib}/trinity/run_panelapplet.la
+%{prefix}/%{_lib}/trinity/run_panelapplet.so
+%{prefix}/%{_lib}/trinity/sidebar_panelextension.la
+%{prefix}/%{_lib}/trinity/sidebar_panelextension.so
+%{prefix}/%{_lib}/trinity/systemtray_panelapplet.la
+%{prefix}/%{_lib}/trinity/systemtray_panelapplet.so
+%{prefix}/%{_lib}/trinity/taskbar_panelapplet.la
+%{prefix}/%{_lib}/trinity/taskbar_panelapplet.so
+%{prefix}/%{_lib}/trinity/taskbar_panelextension.la
+%{prefix}/%{_lib}/trinity/taskbar_panelextension.so
+%{prefix}/%{_lib}/trinity/trash_panelapplet.la
+%{prefix}/%{_lib}/trinity/trash_panelapplet.so
+%{prefix}/%{_lib}/libkasbar.so.*
+%{prefix}/%{_lib}/libtdeinit_appletproxy.la
+%{prefix}/%{_lib}/libtdeinit_appletproxy.so
+%{prefix}/%{_lib}/libtdeinit_extensionproxy.la
+%{prefix}/%{_lib}/libtdeinit_extensionproxy.so
+%{prefix}/%{_lib}/libtdeinit_kicker.la
+%{prefix}/%{_lib}/libtdeinit_kicker.so
+%{prefix}/%{_lib}/libkickermain.so.*
+%{prefix}/%{_lib}/libtaskbar.so.*
+%{prefix}/%{_lib}/libtaskmanager.so.*
+%{prefix}/%{_lib}/libkickoffsearch_interfaces.so.*
+%{prefix}/share/applications/tde/kcmkicker.desktop
+%{prefix}/share/applnk/.hidden/kicker_config_arrangement.desktop
+%{prefix}/share/applnk/.hidden/kicker_config_hiding.desktop
+%{prefix}/share/applnk/.hidden/kicker_config_menus.desktop
+%{prefix}/share/apps/clockapplet/
+%{prefix}/share/apps/tdeconf_update/kicker-3.1-properSizeSetting.pl
+%{prefix}/share/apps/tdeconf_update/kicker-3.5-taskbarEnums.pl
+%{prefix}/share/apps/tdeconf_update/kickerrc.upd
+%{prefix}/share/apps/kicker/
+%exclude %{prefix}/share/apps/kicker/applets/klipper.desktop
+%exclude %{prefix}/share/apps/kicker/applets/ksysguardapplet.desktop
+%{prefix}/share/apps/naughtyapplet/
+%{prefix}/share/autostart/panel.desktop
+%{prefix}/share/config.kcfg/kickerSettings.kcfg
+%{prefix}/share/config.kcfg/launcherapplet.kcfg
+%{prefix}/share/config.kcfg/pagersettings.kcfg
+%{prefix}/share/config.kcfg/taskbar.kcfg
+%{prefix}/share/icons/crystalsvg/*/apps/systemtray.png
+%{prefix}/share/icons/crystalsvg/*/apps/taskbar.png
+%{prefix}/share/icons/crystalsvg/*/apps/kbinaryclock.png
+%{prefix}/share/icons/crystalsvg/*/apps/kdisknav.png
+%{prefix}/share/icons/crystalsvg/*/apps/kicker.png
+%{prefix}/share/icons/crystalsvg/*/apps/panel.png
+%{prefix}/share/icons/crystalsvg/*/apps/runprocesscatcher.png
+%{prefix}/share/icons/crystalsvg/*/apps/kbinaryclock.svgz
+%{prefix}/share/icons/crystalsvg/*/apps/systemtray.svgz
+%{prefix}/share/servicetypes/kickoffsearchplugin.desktop
+%{prefix}/share/doc/tde/HTML/en/kicker/
+%{prefix}/share/man/man1/appletproxy.1*
+%{prefix}/share/man/man1/extensionproxy.1*
+%{prefix}/share/man/man1/kasbar.1*
+%{prefix}/share/man/man1/kicker.1*
 
 ##########
 
@@ -1973,18 +1957,18 @@ This package contains the development files for kicker.
 
 %files -n trinity-kicker-devel
 %defattr(-,root,root,-)
-%{tde_tdeincludedir}/kickoff-search-plugin.h
-%{tde_tdeincludedir}/kickoffsearchinterface.h
-%{tde_libdir}/libkasbar.la
-%{tde_libdir}/libkasbar.so
-%{tde_libdir}/libkickermain.la
-%{tde_libdir}/libkickermain.so
-%{tde_libdir}/libkickoffsearch_interfaces.la
-%{tde_libdir}/libkickoffsearch_interfaces.so
-%{tde_libdir}/libtaskbar.la
-%{tde_libdir}/libtaskbar.so
-%{tde_libdir}/libtaskmanager.la
-%{tde_libdir}/libtaskmanager.so
+%{prefix}/include/tde/kickoff-search-plugin.h
+%{prefix}/include/tde/kickoffsearchinterface.h
+%{prefix}/%{_lib}/libkasbar.la
+%{prefix}/%{_lib}/libkasbar.so
+%{prefix}/%{_lib}/libkickermain.la
+%{prefix}/%{_lib}/libkickermain.so
+%{prefix}/%{_lib}/libkickoffsearch_interfaces.la
+%{prefix}/%{_lib}/libkickoffsearch_interfaces.so
+%{prefix}/%{_lib}/libtaskbar.la
+%{prefix}/%{_lib}/libtaskbar.so
+%{prefix}/%{_lib}/libtaskmanager.la
+%{prefix}/%{_lib}/libtaskmanager.so
 
 ##########
 
@@ -2001,23 +1985,23 @@ web browser if the clipboard contains a URL.
 
 %files -n trinity-klipper
 %defattr(-,root,root,-)
-%{tde_bindir}/klipper
-%config(noreplace) %{tde_confdir}/klipperrc
-%{tde_tdelibdir}/klipper.la
-%{tde_tdelibdir}/klipper.so
-%{tde_tdelibdir}/klipper_panelapplet.la
-%{tde_tdelibdir}/klipper_panelapplet.so
-%{tde_libdir}/libtdeinit_klipper.la
-%{tde_libdir}/libtdeinit_klipper.so
-%{tde_tdeappdir}/klipper.desktop
-%{tde_datadir}/apps/tdeconf_update/klipper-1-2.pl
-%{tde_datadir}/apps/tdeconf_update/klipper-trinity1.sh
-%{tde_datadir}/apps/tdeconf_update/klipperrc.upd
-%{tde_datadir}/apps/tdeconf_update/klippershortcuts.upd
-%{tde_datadir}/apps/kicker/applets/klipper.desktop
-%{tde_datadir}/autostart/klipper.desktop
-%{tde_datadir}/icons/hicolor/*/apps/klipper.*
-%{tde_tdedocdir}/HTML/en/klipper/
+%{prefix}/bin/klipper
+%config(noreplace) %{_sysconfdir}/trinity/klipperrc
+%{prefix}/%{_lib}/trinity/klipper.la
+%{prefix}/%{_lib}/trinity/klipper.so
+%{prefix}/%{_lib}/trinity/klipper_panelapplet.la
+%{prefix}/%{_lib}/trinity/klipper_panelapplet.so
+%{prefix}/%{_lib}/libtdeinit_klipper.la
+%{prefix}/%{_lib}/libtdeinit_klipper.so
+%{prefix}/share/applications/tde/klipper.desktop
+%{prefix}/share/apps/tdeconf_update/klipper-1-2.pl
+%{prefix}/share/apps/tdeconf_update/klipper-trinity1.sh
+%{prefix}/share/apps/tdeconf_update/klipperrc.upd
+%{prefix}/share/apps/tdeconf_update/klippershortcuts.upd
+%{prefix}/share/apps/kicker/applets/klipper.desktop
+%{prefix}/share/autostart/klipper.desktop
+%{prefix}/share/icons/hicolor/*/apps/klipper.*
+%{prefix}/share/doc/tde/HTML/en/klipper/
 
 ##########
 
@@ -2032,22 +2016,22 @@ structure.
 
 %files -n trinity-kmenuedit
 %defattr(-,root,root,-)
-%{tde_bindir}/kcontroledit
-%{tde_bindir}/kmenuedit
-%{tde_tdelibdir}/kcontroledit.la
-%{tde_tdelibdir}/kcontroledit.so
-%{tde_tdelibdir}/kmenuedit.la
-%{tde_tdelibdir}/kmenuedit.so
-%{tde_libdir}/libtdeinit_kcontroledit.la
-%{tde_libdir}/libtdeinit_kcontroledit.so
-%{tde_libdir}/libtdeinit_kmenuedit.la
-%{tde_libdir}/libtdeinit_kmenuedit.so
-%{tde_tdeappdir}/kmenuedit.desktop
-%{tde_datadir}/applnk/System/kmenuedit.desktop
-%{tde_datadir}/apps/kcontroledit/
-%{tde_datadir}/apps/kmenuedit/
-%{tde_tdedocdir}/HTML/en/kmenuedit/
-%{tde_mandir}/man1/kmenuedit.1*
+%{prefix}/bin/kcontroledit
+%{prefix}/bin/kmenuedit
+%{prefix}/%{_lib}/trinity/kcontroledit.la
+%{prefix}/%{_lib}/trinity/kcontroledit.so
+%{prefix}/%{_lib}/trinity/kmenuedit.la
+%{prefix}/%{_lib}/trinity/kmenuedit.so
+%{prefix}/%{_lib}/libtdeinit_kcontroledit.la
+%{prefix}/%{_lib}/libtdeinit_kcontroledit.so
+%{prefix}/%{_lib}/libtdeinit_kmenuedit.la
+%{prefix}/%{_lib}/libtdeinit_kmenuedit.so
+%{prefix}/share/applications/tde/kmenuedit.desktop
+%{prefix}/share/applnk/System/kmenuedit.desktop
+%{prefix}/share/apps/kcontroledit/
+%{prefix}/share/apps/kmenuedit/
+%{prefix}/share/doc/tde/HTML/en/kmenuedit/
+%{prefix}/share/man/man1/kmenuedit.1*
 
 ##########
 
@@ -2082,114 +2066,114 @@ ever launching another application.
 
 %files -n trinity-konqueror
 %defattr(-,root,root,-)
-%config(noreplace) %{tde_confdir}/konqsidebartng.rc
-%{tde_bindir}/kbookmarkmerger
-%{tde_bindir}/keditbookmarks
-%{tde_bindir}/kfmclient
-%{tde_bindir}/konqueror
-%{tde_tdelibdir}/kcm_history.la
-%{tde_tdelibdir}/kcm_history.so
-%{tde_tdelibdir}/kded_konqy_preloader.la
-%{tde_tdelibdir}/kded_konqy_preloader.so
-%{tde_tdelibdir}/keditbookmarks.la
-%{tde_tdelibdir}/keditbookmarks.so
-%{tde_tdelibdir}/kfmclient.la
-%{tde_tdelibdir}/kfmclient.so
-%{tde_tdelibdir}/konq_aboutpage.la
-%{tde_tdelibdir}/konq_aboutpage.so
-%{tde_tdelibdir}/konq_iconview.la
-%{tde_tdelibdir}/konq_iconview.so
-%{tde_tdelibdir}/konq_listview.la
-%{tde_tdelibdir}/konq_listview.so
-%{tde_tdelibdir}/konq_remoteencoding.la
-%{tde_tdelibdir}/konq_remoteencoding.so
-%{tde_tdelibdir}/konq_shellcmdplugin.la
-%{tde_tdelibdir}/konq_shellcmdplugin.so
-%{tde_tdelibdir}/konq_sidebar.la
-%{tde_tdelibdir}/konq_sidebar.so
-%{tde_tdelibdir}/konq_sidebartree_bookmarks.la
-%{tde_tdelibdir}/konq_sidebartree_bookmarks.so
-%{tde_tdelibdir}/konq_sidebartree_dirtree.la
-%{tde_tdelibdir}/konq_sidebartree_dirtree.so
-%{tde_tdelibdir}/konq_sidebartree_history.la
-%{tde_tdelibdir}/konq_sidebartree_history.so
-%{tde_tdelibdir}/konqsidebar_tree.la
-%{tde_tdelibdir}/konqsidebar_tree.so
-%{tde_tdelibdir}/konqsidebar_web.la
-%{tde_tdelibdir}/konqsidebar_web.so
-%{tde_tdelibdir}/konqueror.la
-%{tde_tdelibdir}/konqueror.so
-%{tde_tdelibdir}/libtdehtmlkttsdplugin.la
-%{tde_tdelibdir}/libtdehtmlkttsdplugin.so
-%{tde_libdir}/libtdeinit_keditbookmarks.la
-%{tde_libdir}/libtdeinit_keditbookmarks.so
-%{tde_libdir}/libtdeinit_kfmclient.la
-%{tde_libdir}/libtdeinit_kfmclient.so
-%{tde_libdir}/libtdeinit_konqueror.la
-%{tde_libdir}/libtdeinit_konqueror.so
-%{tde_libdir}/libkonqsidebarplugin.so.*
-%{tde_tdeappdir}/Home.desktop
-%{tde_tdeappdir}/kcmhistory.desktop
-%{tde_tdeappdir}/kfmclient.desktop
-%{tde_tdeappdir}/kfmclient_dir.desktop
-%{tde_tdeappdir}/kfmclient_html.desktop
-%{tde_tdeappdir}/kfmclient_war.desktop
-%{tde_tdeappdir}/tdehtml_filter.desktop
-%{tde_tdeappdir}/konqbrowser.desktop
-%{tde_tdeappdir}/konquerorsu.desktop
-%{tde_datadir}/applnk/.hidden/konqfilemgr.desktop
-%{tde_datadir}/applnk/Internet/keditbookmarks.desktop
-%{tde_datadir}/applnk/konqueror.desktop
-%{tde_datadir}/apps/tdeconf_update/kfmclient_3_2.upd
-%{tde_datadir}/apps/tdeconf_update/kfmclient_3_2_update.sh
-%{tde_datadir}/apps/tdeconf_update/konqsidebartng.upd
-%{tde_datadir}/apps/tdeconf_update/move_konqsidebartng_entries.sh
-%{tde_datadir}/apps/keditbookmarks/
-%{tde_datadir}/apps/tdehtml/kpartplugins/
-%{tde_datadir}/apps/konqiconview/
-%{tde_datadir}/apps/konqlistview/
-%exclude %{tde_datadir}/apps/konqsidebartng/virtual_folders/services/fonts.desktop
-%{tde_datadir}/apps/konqsidebartng/
-%{tde_datadir}/apps/konqueror/about/
-%dir %{tde_datadir}/apps/konqueror/dirtree
-%dir %{tde_datadir}/apps/konqueror/dirtree/remote
-%{tde_datadir}/apps/konqueror/icons/
-%{tde_datadir}/apps/konqueror/konq-simplebrowser.rc
-%{tde_datadir}/apps/konqueror/konqueror.rc
-%{tde_datadir}/apps/konqueror/pics/indicator_connect.png
-%{tde_datadir}/apps/konqueror/pics/indicator_empty.png
-%{tde_datadir}/apps/konqueror/pics/indicator_noconnect.png
-%{tde_datadir}/apps/konqueror/pics/indicator_viewactive.png
-%{tde_datadir}/apps/konqueror/profiles/
-%exclude %{tde_datadir}/apps/konqueror/servicemenus/kdesktopSetAsBackground.desktop
-%exclude %{tde_datadir}/apps/konqueror/servicemenus/installfont.desktop
-%{tde_datadir}/apps/konqueror/servicemenus/*.desktop
+%config(noreplace) %{_sysconfdir}/trinity/konqsidebartng.rc
+%{prefix}/bin/kbookmarkmerger
+%{prefix}/bin/keditbookmarks
+%{prefix}/bin/kfmclient
+%{prefix}/bin/konqueror
+%{prefix}/%{_lib}/trinity/kcm_history.la
+%{prefix}/%{_lib}/trinity/kcm_history.so
+%{prefix}/%{_lib}/trinity/kded_konqy_preloader.la
+%{prefix}/%{_lib}/trinity/kded_konqy_preloader.so
+%{prefix}/%{_lib}/trinity/keditbookmarks.la
+%{prefix}/%{_lib}/trinity/keditbookmarks.so
+%{prefix}/%{_lib}/trinity/kfmclient.la
+%{prefix}/%{_lib}/trinity/kfmclient.so
+%{prefix}/%{_lib}/trinity/konq_aboutpage.la
+%{prefix}/%{_lib}/trinity/konq_aboutpage.so
+%{prefix}/%{_lib}/trinity/konq_iconview.la
+%{prefix}/%{_lib}/trinity/konq_iconview.so
+%{prefix}/%{_lib}/trinity/konq_listview.la
+%{prefix}/%{_lib}/trinity/konq_listview.so
+%{prefix}/%{_lib}/trinity/konq_remoteencoding.la
+%{prefix}/%{_lib}/trinity/konq_remoteencoding.so
+%{prefix}/%{_lib}/trinity/konq_shellcmdplugin.la
+%{prefix}/%{_lib}/trinity/konq_shellcmdplugin.so
+%{prefix}/%{_lib}/trinity/konq_sidebar.la
+%{prefix}/%{_lib}/trinity/konq_sidebar.so
+%{prefix}/%{_lib}/trinity/konq_sidebartree_bookmarks.la
+%{prefix}/%{_lib}/trinity/konq_sidebartree_bookmarks.so
+%{prefix}/%{_lib}/trinity/konq_sidebartree_dirtree.la
+%{prefix}/%{_lib}/trinity/konq_sidebartree_dirtree.so
+%{prefix}/%{_lib}/trinity/konq_sidebartree_history.la
+%{prefix}/%{_lib}/trinity/konq_sidebartree_history.so
+%{prefix}/%{_lib}/trinity/konqsidebar_tree.la
+%{prefix}/%{_lib}/trinity/konqsidebar_tree.so
+%{prefix}/%{_lib}/trinity/konqsidebar_web.la
+%{prefix}/%{_lib}/trinity/konqsidebar_web.so
+%{prefix}/%{_lib}/trinity/konqueror.la
+%{prefix}/%{_lib}/trinity/konqueror.so
+%{prefix}/%{_lib}/trinity/libtdehtmlkttsdplugin.la
+%{prefix}/%{_lib}/trinity/libtdehtmlkttsdplugin.so
+%{prefix}/%{_lib}/libtdeinit_keditbookmarks.la
+%{prefix}/%{_lib}/libtdeinit_keditbookmarks.so
+%{prefix}/%{_lib}/libtdeinit_kfmclient.la
+%{prefix}/%{_lib}/libtdeinit_kfmclient.so
+%{prefix}/%{_lib}/libtdeinit_konqueror.la
+%{prefix}/%{_lib}/libtdeinit_konqueror.so
+%{prefix}/%{_lib}/libkonqsidebarplugin.so.*
+%{prefix}/share/applications/tde/Home.desktop
+%{prefix}/share/applications/tde/kcmhistory.desktop
+%{prefix}/share/applications/tde/kfmclient.desktop
+%{prefix}/share/applications/tde/kfmclient_dir.desktop
+%{prefix}/share/applications/tde/kfmclient_html.desktop
+%{prefix}/share/applications/tde/kfmclient_war.desktop
+%{prefix}/share/applications/tde/tdehtml_filter.desktop
+%{prefix}/share/applications/tde/konqbrowser.desktop
+%{prefix}/share/applications/tde/konquerorsu.desktop
+%{prefix}/share/applnk/.hidden/konqfilemgr.desktop
+%{prefix}/share/applnk/Internet/keditbookmarks.desktop
+%{prefix}/share/applnk/konqueror.desktop
+%{prefix}/share/apps/tdeconf_update/kfmclient_3_2.upd
+%{prefix}/share/apps/tdeconf_update/kfmclient_3_2_update.sh
+%{prefix}/share/apps/tdeconf_update/konqsidebartng.upd
+%{prefix}/share/apps/tdeconf_update/move_konqsidebartng_entries.sh
+%{prefix}/share/apps/keditbookmarks/
+%{prefix}/share/apps/tdehtml/kpartplugins/
+%{prefix}/share/apps/konqiconview/
+%{prefix}/share/apps/konqlistview/
+%exclude %{prefix}/share/apps/konqsidebartng/virtual_folders/services/fonts.desktop
+%{prefix}/share/apps/konqsidebartng/
+%{prefix}/share/apps/konqueror/about/
+%dir %{prefix}/share/apps/konqueror/dirtree
+%dir %{prefix}/share/apps/konqueror/dirtree/remote
+%{prefix}/share/apps/konqueror/icons/
+%{prefix}/share/apps/konqueror/konq-simplebrowser.rc
+%{prefix}/share/apps/konqueror/konqueror.rc
+%{prefix}/share/apps/konqueror/pics/indicator_connect.png
+%{prefix}/share/apps/konqueror/pics/indicator_empty.png
+%{prefix}/share/apps/konqueror/pics/indicator_noconnect.png
+%{prefix}/share/apps/konqueror/pics/indicator_viewactive.png
+%{prefix}/share/apps/konqueror/profiles/
+%exclude %{prefix}/share/apps/konqueror/servicemenus/kdesktopSetAsBackground.desktop
+%exclude %{prefix}/share/apps/konqueror/servicemenus/installfont.desktop
+%{prefix}/share/apps/konqueror/servicemenus/*.desktop
 %ghost %{_sysconfdir}/alternatives/media_safelyremove.desktop
-%{tde_datadir}/apps/konqueror/servicemenus/media_safelyremove.desktop_tdebase
-%{tde_datadir}/apps/konqueror/tiles/
-%{tde_datadir}/autostart/konqy_preload.desktop
-%{tde_datadir}/config.kcfg/keditbookmarks.kcfg
-%{tde_datadir}/config.kcfg/konq_listview.kcfg
-%{tde_datadir}/config.kcfg/konqueror.kcfg
-%{tde_datadir}/icons/crystalsvg/*/apps/keditbookmarks.png
-%{tde_datadir}/icons/crystalsvg/*/apps/kfm_home.svgz
-%{tde_datadir}/icons/hicolor/*/apps/kfm.png
-%{tde_datadir}/icons/hicolor/*/apps/konqueror.*
-%{tde_datadir}/services/kded/konqy_preloader.desktop
-%{tde_datadir}/services/konq_*.desktop
-%{tde_datadir}/servicetypes/konqaboutpage.desktop
-%{tde_tdedocdir}/HTML/en/konqueror/
-%{tde_tdedocdir}/HTML/en/keditbookmarks/
-%{tde_mandir}/man1/keditbookmarks.1*
-%{tde_mandir}/man1/kfmclient.1*
-%{tde_mandir}/man1/konqueror.1*
+%{prefix}/share/apps/konqueror/servicemenus/media_safelyremove.desktop_tdebase
+%{prefix}/share/apps/konqueror/tiles/
+%{prefix}/share/autostart/konqy_preload.desktop
+%{prefix}/share/config.kcfg/keditbookmarks.kcfg
+%{prefix}/share/config.kcfg/konq_listview.kcfg
+%{prefix}/share/config.kcfg/konqueror.kcfg
+%{prefix}/share/icons/crystalsvg/*/apps/keditbookmarks.png
+%{prefix}/share/icons/crystalsvg/*/apps/kfm_home.svgz
+%{prefix}/share/icons/hicolor/*/apps/kfm.png
+%{prefix}/share/icons/hicolor/*/apps/konqueror.*
+%{prefix}/share/services/kded/konqy_preloader.desktop
+%{prefix}/share/services/konq_*.desktop
+%{prefix}/share/servicetypes/konqaboutpage.desktop
+%{prefix}/share/doc/tde/HTML/en/konqueror/
+%{prefix}/share/doc/tde/HTML/en/keditbookmarks/
+%{prefix}/share/man/man1/keditbookmarks.1*
+%{prefix}/share/man/man1/kfmclient.1*
+%{prefix}/share/man/man1/konqueror.1*
 
 %post -n trinity-konqueror
 if [ $1 -eq 1 ]; then
   update-alternatives --install \
-    %{tde_datadir}/apps/konqueror/servicemenus/media_safelyremove.desktop \
+    %{prefix}/share/apps/konqueror/servicemenus/media_safelyremove.desktop \
     media_safelyremove.desktop_konqueror \
-    %{tde_datadir}/apps/konqueror/servicemenus/media_safelyremove.desktop_tdebase \
+    %{prefix}/share/apps/konqueror/servicemenus/media_safelyremove.desktop_tdebase \
     10 || :
 fi
 
@@ -2197,7 +2181,7 @@ fi
 if [ $1 -eq 0 ]; then
   update-alternatives --remove \
     media_safelyremove.desktop_konqueror \
-    %{tde_datadir}/apps/konqueror/servicemenus/media_safelyremove.desktop_tdebase || :
+    %{prefix}/share/apps/konqueror/servicemenus/media_safelyremove.desktop_tdebase || :
 fi
 
 ##########
@@ -2212,10 +2196,10 @@ This package contains the development files for konqueror.
 
 %files -n trinity-konqueror-devel
 %defattr(-,root,root,-)
-%{tde_tdeincludedir}/konqsidebarplugin.h
-%{tde_tdeincludedir}/KonquerorIface.h
-%{tde_libdir}/libkonqsidebarplugin.la
-%{tde_libdir}/libkonqsidebarplugin.so
+%{prefix}/include/tde/konqsidebarplugin.h
+%{prefix}/include/tde/KonquerorIface.h
+%{prefix}/%{_lib}/libkonqsidebarplugin.la
+%{prefix}/%{_lib}/libkonqsidebarplugin.so
 
 ##########
 
@@ -2229,14 +2213,14 @@ This package includes support for Netscape plugins in Konqueror.
 
 %files -n trinity-konqueror-nsplugins
 %defattr(-,root,root,-)
-%{tde_bindir}/nspluginscan
-%{tde_bindir}/nspluginviewer
-%{tde_tdelibdir}/kcm_nsplugins.la
-%{tde_tdelibdir}/kcm_nsplugins.so
-%{tde_tdelibdir}/libnsplugin.la
-%{tde_tdelibdir}/libnsplugin.so
-%{tde_tdeappdir}/tdehtml_plugins.desktop
-%{tde_datadir}/apps/plugin/nspluginpart.rc
+%{prefix}/bin/nspluginscan
+%{prefix}/bin/nspluginviewer
+%{prefix}/%{_lib}/trinity/kcm_nsplugins.la
+%{prefix}/%{_lib}/trinity/kcm_nsplugins.so
+%{prefix}/%{_lib}/trinity/libnsplugin.la
+%{prefix}/%{_lib}/trinity/libnsplugin.so
+%{prefix}/share/applications/tde/tdehtml_plugins.desktop
+%{prefix}/share/apps/plugin/nspluginpart.rc
 
 ##########
 
@@ -2262,35 +2246,35 @@ Using Konsole, a user can open:
 
 %files -n trinity-konsole
 %defattr(-,root,root,-)
-%{tde_bindir}/konsole
-%{tde_bindir}/terminalhere
-%{tde_tdelibdir}/kcm_konsole.la
-%{tde_tdelibdir}/kcm_konsole.so
-%{tde_tdelibdir}/kded_kwrited.la
-%{tde_tdelibdir}/kded_kwrited.so
-%{tde_tdelibdir}/konsole.la
-%{tde_tdelibdir}/konsole.so
-%{tde_tdelibdir}/libkonsolepart.la
-%{tde_tdelibdir}/libkonsolepart.so
-%{tde_libdir}/libtdeinit_konsole.la
-%{tde_libdir}/libtdeinit_konsole.so
-%{tde_tdeappdir}/konsole.desktop
-%{tde_tdeappdir}/konsolesu.desktop
-%{tde_datadir}/applnk/.hidden/kcmkonsole.desktop
-%{tde_datadir}/apps/tdeconf_update/konsole.upd
-%{tde_datadir}/apps/tdeconf_update/schemaStrip.pl
-%{tde_datadir}/apps/konsole/
-%{tde_datadir}/icons/hicolor/*/apps/konsole.*
-%{tde_datadir}/mimelnk/application/x-konsole.desktop
-%{tde_datadir}/services/kded/kwrited.desktop
-%{tde_datadir}/services/konsolepart.desktop
-%{tde_datadir}/services/konsole-script.desktop
-%{tde_datadir}/services/kwrited.desktop
-%{tde_datadir}/servicetypes/terminalemulator.desktop
-%{tde_tdedocdir}/HTML/en/konsole/
-%{tde_tdedocdir}/HTML/en/kcontrol/kcmkonsole/
+%{prefix}/bin/konsole
+%{prefix}/bin/terminalhere
+%{prefix}/%{_lib}/trinity/kcm_konsole.la
+%{prefix}/%{_lib}/trinity/kcm_konsole.so
+%{prefix}/%{_lib}/trinity/kded_kwrited.la
+%{prefix}/%{_lib}/trinity/kded_kwrited.so
+%{prefix}/%{_lib}/trinity/konsole.la
+%{prefix}/%{_lib}/trinity/konsole.so
+%{prefix}/%{_lib}/trinity/libkonsolepart.la
+%{prefix}/%{_lib}/trinity/libkonsolepart.so
+%{prefix}/%{_lib}/libtdeinit_konsole.la
+%{prefix}/%{_lib}/libtdeinit_konsole.so
+%{prefix}/share/applications/tde/konsole.desktop
+%{prefix}/share/applications/tde/konsolesu.desktop
+%{prefix}/share/applnk/.hidden/kcmkonsole.desktop
+%{prefix}/share/apps/tdeconf_update/konsole.upd
+%{prefix}/share/apps/tdeconf_update/schemaStrip.pl
+%{prefix}/share/apps/konsole/
+%{prefix}/share/icons/hicolor/*/apps/konsole.*
+%{prefix}/share/mimelnk/application/x-konsole.desktop
+%{prefix}/share/services/kded/kwrited.desktop
+%{prefix}/share/services/konsolepart.desktop
+%{prefix}/share/services/konsole-script.desktop
+%{prefix}/share/services/kwrited.desktop
+%{prefix}/share/servicetypes/terminalemulator.desktop
+%{prefix}/share/doc/tde/HTML/en/konsole/
+%{prefix}/share/doc/tde/HTML/en/kcontrol/kcmkonsole/
 %config %{_sysconfdir}/fonts/conf.d/99-konsole.conf
-%{tde_mandir}/man1/konsole.1*
+%{prefix}/share/man/man1/konsole.1*
 
 ##########
 
@@ -2306,12 +2290,12 @@ applications. It is used to switch between applications or desktops.
 
 %files -n trinity-kpager
 %defattr(-,root,root,-)
-%{tde_bindir}/kpager
-%{tde_tdeappdir}/kpager.desktop
-%{tde_datadir}/applnk/Utilities/kpager.desktop
-%{tde_datadir}/icons/hicolor/*/apps/kpager.png
-%{tde_tdedocdir}/HTML/en/kpager/
-%{tde_mandir}/man1/kpager.1*
+%{prefix}/bin/kpager
+%{prefix}/share/applications/tde/kpager.desktop
+%{prefix}/share/applnk/Utilities/kpager.desktop
+%{prefix}/share/icons/hicolor/*/apps/kpager.png
+%{prefix}/share/doc/tde/HTML/en/kpager/
+%{prefix}/share/man/man1/kpager.1*
 
 ##########
 
@@ -2328,12 +2312,12 @@ automatically started. KPersonalizer can also be called later.
 
 %files -n trinity-kpersonalizer
 %defattr(-,root,root,-)
-%{tde_bindir}/kpersonalizer
-%{tde_tdeappdir}/kpersonalizer.desktop
-%{tde_datadir}/applnk/System/kpersonalizer.desktop
-%{tde_datadir}/apps/kpersonalizer/
-%{tde_datadir}/icons/crystalsvg/*/apps/kpersonalizer.png
-%{tde_mandir}/man1/kpersonalizer.1*
+%{prefix}/bin/kpersonalizer
+%{prefix}/share/applications/tde/kpersonalizer.desktop
+%{prefix}/share/applnk/System/kpersonalizer.desktop
+%{prefix}/share/apps/kpersonalizer/
+%{prefix}/share/icons/crystalsvg/*/apps/kpersonalizer.png
+%{prefix}/share/man/man1/kpersonalizer.1*
 
 ##########
 
@@ -2358,20 +2342,20 @@ TDE will start, but many good defaults will not be set.
 
 %files -n trinity-ksmserver
 %defattr(-,root,root,-)
-%{tde_bindir}/ksmserver
-%{tde_bindir}/%{starttde}
-%{tde_bindir}/migratekde3
-%{tde_bindir}/r14-xdg-update
-%{tde_bindir}/tdeinit_displayconfig
-%{tde_bindir}/tdeinit_phase1
-%{tde_tdelibdir}/ksmserver.la
-%{tde_tdelibdir}/ksmserver.so
-%{tde_libdir}/libtdeinit_ksmserver.la
-%{tde_libdir}/libtdeinit_ksmserver.so
-%{tde_datadir}/apps/tdeconf_update/ksmserver.upd
-%{tde_datadir}/apps/tdeconf_update/move_session_config.sh
-%{tde_datadir}/apps/ksmserver/
-%{tde_mandir}/man1/starttde.1*
+%{prefix}/bin/ksmserver
+%{prefix}/bin/starttde
+%{prefix}/bin/migratekde3
+%{prefix}/bin/r14-xdg-update
+%{prefix}/bin/tdeinit_displayconfig
+%{prefix}/bin/tdeinit_phase1
+%{prefix}/%{_lib}/trinity/ksmserver.la
+%{prefix}/%{_lib}/trinity/ksmserver.so
+%{prefix}/%{_lib}/libtdeinit_ksmserver.la
+%{prefix}/%{_lib}/libtdeinit_ksmserver.so
+%{prefix}/share/apps/tdeconf_update/ksmserver.upd
+%{prefix}/share/apps/tdeconf_update/move_session_config.sh
+%{prefix}/share/apps/ksmserver/
+%{prefix}/share/man/man1/starttde.1*
 
 
 ##########
@@ -2387,28 +2371,28 @@ a TDE session is launched.
 
 %files -n trinity-ksplash
 %defattr(-,root,root,-)
-%{tde_bindir}/ksplash
-%{tde_bindir}/ksplashsimple
-%{tde_tdelibdir}/kcm_ksplashthemes.la
-%{tde_tdelibdir}/kcm_ksplashthemes.so
-%{tde_tdelibdir}/ksplashdefault.la
-%{tde_tdelibdir}/ksplashdefault.so
-%{tde_tdelibdir}/ksplashunified.la
-%{tde_tdelibdir}/ksplashunified.so
-%{tde_tdelibdir}/ksplashredmond.la
-%{tde_tdelibdir}/ksplashredmond.so
-%{tde_tdelibdir}/ksplashstandard.la
-%{tde_tdelibdir}/ksplashstandard.so
-%{tde_libdir}/libksplashthemes.so.*
-%{tde_tdeappdir}/ksplashthememgr.desktop
-%{tde_datadir}/apps/ksplash
-%{tde_datadir}/services/ksplashdefault.desktop
-%{tde_datadir}/services/ksplash.desktop
-%{tde_datadir}/services/ksplashunified.desktop
-%{tde_datadir}/services/ksplashredmond.desktop
-%{tde_datadir}/services/ksplashstandard.desktop
-%{tde_datadir}/servicetypes/ksplashplugins.desktop
-%{tde_tdedocdir}/HTML/en/ksplashml/
+%{prefix}/bin/ksplash
+%{prefix}/bin/ksplashsimple
+%{prefix}/%{_lib}/trinity/kcm_ksplashthemes.la
+%{prefix}/%{_lib}/trinity/kcm_ksplashthemes.so
+%{prefix}/%{_lib}/trinity/ksplashdefault.la
+%{prefix}/%{_lib}/trinity/ksplashdefault.so
+%{prefix}/%{_lib}/trinity/ksplashunified.la
+%{prefix}/%{_lib}/trinity/ksplashunified.so
+%{prefix}/%{_lib}/trinity/ksplashredmond.la
+%{prefix}/%{_lib}/trinity/ksplashredmond.so
+%{prefix}/%{_lib}/trinity/ksplashstandard.la
+%{prefix}/%{_lib}/trinity/ksplashstandard.so
+%{prefix}/%{_lib}/libksplashthemes.so.*
+%{prefix}/share/applications/tde/ksplashthememgr.desktop
+%{prefix}/share/apps/ksplash
+%{prefix}/share/services/ksplashdefault.desktop
+%{prefix}/share/services/ksplash.desktop
+%{prefix}/share/services/ksplashunified.desktop
+%{prefix}/share/services/ksplashredmond.desktop
+%{prefix}/share/services/ksplashstandard.desktop
+%{prefix}/share/servicetypes/ksplashplugins.desktop
+%{prefix}/share/doc/tde/HTML/en/ksplashml/
 
 ##########
 
@@ -2422,9 +2406,9 @@ This package contains the development files for ksplash.
 
 %files -n trinity-ksplash-devel
 %defattr(-,root,root,-)
-%{tde_tdeincludedir}/ksplash/
-%{tde_libdir}/libksplashthemes.la
-%{tde_libdir}/libksplashthemes.so
+%{prefix}/include/tde/ksplash/
+%{prefix}/%{_lib}/libksplashthemes.la
+%{prefix}/%{_lib}/libksplashthemes.so
 
 ##########
 
@@ -2440,17 +2424,17 @@ computer.
 
 %files -n trinity-ksysguard
 %defattr(-,root,root,-)
-%{tde_bindir}/kpm
-%{tde_bindir}/ksysguard
-%{tde_tdelibdir}/sysguard_panelapplet.la
-%{tde_tdelibdir}/sysguard_panelapplet.so
-%{tde_libdir}/libksgrd.so.*
-%{tde_tdeappdir}/ksysguard.desktop
-%{tde_datadir}/apps/kicker/applets/ksysguardapplet.desktop
-%{tde_datadir}/apps/ksysguard/
-%{tde_datadir}/icons/crystalsvg/*/apps/ksysguard.png
-%{tde_datadir}/mimelnk/application/x-ksysguard.desktop
-%{tde_tdedocdir}/HTML/en/ksysguard/
+%{prefix}/bin/kpm
+%{prefix}/bin/ksysguard
+%{prefix}/%{_lib}/trinity/sysguard_panelapplet.la
+%{prefix}/%{_lib}/trinity/sysguard_panelapplet.so
+%{prefix}/%{_lib}/libksgrd.so.*
+%{prefix}/share/applications/tde/ksysguard.desktop
+%{prefix}/share/apps/kicker/applets/ksysguardapplet.desktop
+%{prefix}/share/apps/ksysguard/
+%{prefix}/share/icons/crystalsvg/*/apps/ksysguard.png
+%{prefix}/share/mimelnk/application/x-ksysguard.desktop
+%{prefix}/share/doc/tde/HTML/en/ksysguard/
 
 ##########
 
@@ -2464,9 +2448,9 @@ This package contains the development files for ksysguard.
 
 %files -n trinity-ksysguard-devel
 %defattr(-,root,root,-)
-%{tde_tdeincludedir}/ksgrd/
-%{tde_libdir}/libksgrd.la
-%{tde_libdir}/libksgrd.so
+%{prefix}/include/tde/ksgrd/
+%{prefix}/%{_lib}/libksgrd.la
+%{prefix}/%{_lib}/libksgrd.so
 
 ##########
 
@@ -2482,8 +2466,8 @@ to monitor it through the daemon running there.
 
 %files -n trinity-ksysguardd
 %defattr(-,root,root,-)
-%{tde_bindir}/ksysguardd
-%config(noreplace) %{tde_confdir}/ksysguarddrc
+%{prefix}/bin/ksysguardd
+%config(noreplace) %{_sysconfdir}/trinity/ksysguarddrc
 
 ##########
 
@@ -2497,12 +2481,12 @@ ktip provides many useful tips on using TDE when you log in.
 
 %files -n trinity-ktip
 %defattr(-,root,root,-)
-%{tde_bindir}/ktip
-%{tde_tdeappdir}/ktip.desktop
-%{tde_datadir}/applnk/Toys/ktip.desktop
-%{tde_datadir}/apps/tdewizard/
-%{tde_datadir}/autostart/ktip.desktop
-%{tde_datadir}/icons/hicolor/*/apps/ktip.*
+%{prefix}/bin/ktip
+%{prefix}/share/applications/tde/ktip.desktop
+%{prefix}/share/applnk/Toys/ktip.desktop
+%{prefix}/share/apps/tdewizard/
+%{prefix}/share/autostart/ktip.desktop
+%{prefix}/share/icons/hicolor/*/apps/ktip.*
 
 ##########
 
@@ -2516,47 +2500,47 @@ This package contains the default X window manager for TDE.
 
 %files -n trinity-twin
 %defattr(-,root,root,-)
-%{tde_bindir}/twin
-%{tde_bindir}/twin_killer_helper
-%{tde_bindir}/twin_resumer_helper
-%{tde_bindir}/twin_rules_dialog
-%{tde_libdir}/tdeconf_update_bin/twin_update_default_rules
-%{tde_libdir}/tdeconf_update_bin/twin_update_window_settings
-%{tde_tdelibdir}/kcm_twin*.la
-%{tde_tdelibdir}/kcm_twin*.so
-%{tde_tdelibdir}/twin*.la
-%{tde_tdelibdir}/twin*.so
-%{tde_libdir}/libtdecorations.so.*
-%{tde_libdir}/libtdeinit_twin_rules_dialog.la
-%{tde_libdir}/libtdeinit_twin_rules_dialog.so
-%{tde_libdir}/libtdeinit_twin.la
-%{tde_libdir}/libtdeinit_twin.so
-%{tde_tdeappdir}/showdesktop.desktop
-%{tde_tdeappdir}/twindecoration.desktop
-%{tde_tdeappdir}/twinoptions.desktop
-%{tde_tdeappdir}/twinrules.desktop
-%{tde_datadir}/applnk/.hidden/twinactions.desktop
-%{tde_datadir}/applnk/.hidden/twinactiveborders.desktop
-%{tde_datadir}/applnk/.hidden/twinadvanced.desktop
-%{tde_datadir}/applnk/.hidden/twinfocus.desktop
-%{tde_datadir}/applnk/.hidden/twinmoving.desktop
-%{tde_datadir}/applnk/.hidden/twintranslucency.desktop
-%{tde_datadir}/apps/tdeconf_update/twin3_plugin.pl
-%{tde_datadir}/apps/tdeconf_update/twin3_plugin.upd
-%{tde_datadir}/apps/tdeconf_update/twin_focus1.sh
-%{tde_datadir}/apps/tdeconf_update/twin_focus1.upd
-%{tde_datadir}/apps/tdeconf_update/twin_focus2.sh
-%{tde_datadir}/apps/tdeconf_update/twin_focus2.upd
-%{tde_datadir}/apps/tdeconf_update/twin_fsp_workarounds_1.upd
-%{tde_datadir}/apps/tdeconf_update/twiniconify.upd
-%{tde_datadir}/apps/tdeconf_update/twinsticky.upd
-%{tde_datadir}/apps/tdeconf_update/twin.upd
-%{tde_datadir}/apps/tdeconf_update/twinupdatewindowsettings.upd
-%{tde_datadir}/apps/tdeconf_update/pluginlibFix.pl
-%{tde_datadir}/apps/twin/
-%{tde_datadir}/config.kcfg/twin.kcfg
-%{tde_datadir}/icons/crystalsvg/*/apps/twin.png
-%{tde_tdedocdir}/HTML/en/kompmgr/
+%{prefix}/bin/twin
+%{prefix}/bin/twin_killer_helper
+%{prefix}/bin/twin_resumer_helper
+%{prefix}/bin/twin_rules_dialog
+%{prefix}/%{_lib}/tdeconf_update_bin/twin_update_default_rules
+%{prefix}/%{_lib}/tdeconf_update_bin/twin_update_window_settings
+%{prefix}/%{_lib}/trinity/kcm_twin*.la
+%{prefix}/%{_lib}/trinity/kcm_twin*.so
+%{prefix}/%{_lib}/trinity/twin*.la
+%{prefix}/%{_lib}/trinity/twin*.so
+%{prefix}/%{_lib}/libtdecorations.so.*
+%{prefix}/%{_lib}/libtdeinit_twin_rules_dialog.la
+%{prefix}/%{_lib}/libtdeinit_twin_rules_dialog.so
+%{prefix}/%{_lib}/libtdeinit_twin.la
+%{prefix}/%{_lib}/libtdeinit_twin.so
+%{prefix}/share/applications/tde/showdesktop.desktop
+%{prefix}/share/applications/tde/twindecoration.desktop
+%{prefix}/share/applications/tde/twinoptions.desktop
+%{prefix}/share/applications/tde/twinrules.desktop
+%{prefix}/share/applnk/.hidden/twinactions.desktop
+%{prefix}/share/applnk/.hidden/twinactiveborders.desktop
+%{prefix}/share/applnk/.hidden/twinadvanced.desktop
+%{prefix}/share/applnk/.hidden/twinfocus.desktop
+%{prefix}/share/applnk/.hidden/twinmoving.desktop
+%{prefix}/share/applnk/.hidden/twintranslucency.desktop
+%{prefix}/share/apps/tdeconf_update/twin3_plugin.pl
+%{prefix}/share/apps/tdeconf_update/twin3_plugin.upd
+%{prefix}/share/apps/tdeconf_update/twin_focus1.sh
+%{prefix}/share/apps/tdeconf_update/twin_focus1.upd
+%{prefix}/share/apps/tdeconf_update/twin_focus2.sh
+%{prefix}/share/apps/tdeconf_update/twin_focus2.upd
+%{prefix}/share/apps/tdeconf_update/twin_fsp_workarounds_1.upd
+%{prefix}/share/apps/tdeconf_update/twiniconify.upd
+%{prefix}/share/apps/tdeconf_update/twinsticky.upd
+%{prefix}/share/apps/tdeconf_update/twin.upd
+%{prefix}/share/apps/tdeconf_update/twinupdatewindowsettings.upd
+%{prefix}/share/apps/tdeconf_update/pluginlibFix.pl
+%{prefix}/share/apps/twin/
+%{prefix}/share/config.kcfg/twin.kcfg
+%{prefix}/share/icons/crystalsvg/*/apps/twin.png
+%{prefix}/share/doc/tde/HTML/en/kompmgr/
 
 ##########
 
@@ -2570,15 +2554,15 @@ This package contains the development files for twin.
 
 %files -n trinity-twin-devel
 %defattr(-,root,root,-)
-%{tde_tdeincludedir}/twin/
-%{tde_tdeincludedir}/kcommondecoration.h
-%{tde_tdeincludedir}/kdecoration.h
-%{tde_tdeincludedir}/kdecoration_p.h
-%{tde_tdeincludedir}/kdecoration_plugins_p.h
-%{tde_tdeincludedir}/kdecorationfactory.h
-%{tde_tdeincludedir}/KWinInterface.h
-%{tde_libdir}/libtdecorations.la
-%{tde_libdir}/libtdecorations.so
+%{prefix}/include/tde/twin/
+%{prefix}/include/tde/kcommondecoration.h
+%{prefix}/include/tde/kdecoration.h
+%{prefix}/include/tde/kdecoration_p.h
+%{prefix}/include/tde/kdecoration_plugins_p.h
+%{prefix}/include/tde/kdecorationfactory.h
+%{prefix}/include/tde/KWinInterface.h
+%{prefix}/%{_lib}/libtdecorations.la
+%{prefix}/%{_lib}/libtdecorations.so
 
 ##########
 
@@ -2592,22 +2576,22 @@ Konqueror and the kdesktop package.
 
 %files -n trinity-libkonq
 %defattr(-,root,root,-)
-%{tde_tdelibdir}/kded_favicons.la
-%{tde_tdelibdir}/kded_favicons.so
-%{tde_tdelibdir}/konq_sound.la
-%{tde_tdelibdir}/konq_sound.so
-%{tde_libdir}/libkonq.so.*
-%{tde_datadir}/apps/kbookmark/
-%{tde_datadir}/apps/tdeconf_update/favicons.upd
-%{tde_datadir}/apps/tdeconf_update/move_favicons.sh
-%dir %{tde_datadir}/apps/konqueror/pics
-%{tde_datadir}/apps/konqueror/pics/arrow_bottomleft.png
-%{tde_datadir}/apps/konqueror/pics/arrow_bottomright.png
-%{tde_datadir}/apps/konqueror/pics/arrow_topleft.png
-%{tde_datadir}/apps/konqueror/pics/arrow_topright.png
-%{tde_datadir}/apps/konqueror/pics/thumbnailfont_7x4.png
-%{tde_datadir}/services/kded/favicons.desktop
-%{tde_datadir}/servicetypes/konqpopupmenuplugin.desktop
+%{prefix}/%{_lib}/trinity/kded_favicons.la
+%{prefix}/%{_lib}/trinity/kded_favicons.so
+%{prefix}/%{_lib}/trinity/konq_sound.la
+%{prefix}/%{_lib}/trinity/konq_sound.so
+%{prefix}/%{_lib}/libkonq.so.*
+%{prefix}/share/apps/kbookmark/
+%{prefix}/share/apps/tdeconf_update/favicons.upd
+%{prefix}/share/apps/tdeconf_update/move_favicons.sh
+%dir %{prefix}/share/apps/konqueror/pics
+%{prefix}/share/apps/konqueror/pics/arrow_bottomleft.png
+%{prefix}/share/apps/konqueror/pics/arrow_bottomright.png
+%{prefix}/share/apps/konqueror/pics/arrow_topleft.png
+%{prefix}/share/apps/konqueror/pics/arrow_topright.png
+%{prefix}/share/apps/konqueror/pics/thumbnailfont_7x4.png
+%{prefix}/share/services/kded/favicons.desktop
+%{prefix}/share/servicetypes/konqpopupmenuplugin.desktop
 
 ##########
 
@@ -2624,9 +2608,9 @@ These libraries allow you to use TDE dialogs in native TQt3 applications.
 %files libtqt3-integration
 %defattr(-,root,root,-)
 %{_libdir}/tqt3/plugins/integration/
-%{tde_tdelibdir}/kded_tdeintegration.la
-%{tde_tdelibdir}/kded_tdeintegration.so
-%{tde_datadir}/services/kded/tdeintegration.desktop
+%{prefix}/%{_lib}/trinity/kded_tdeintegration.la
+%{prefix}/%{_lib}/trinity/kded_tdeintegration.so
+%{prefix}/share/services/kded/tdeintegration.desktop
 
 ##########
 
@@ -2642,15 +2626,15 @@ Konqueror libraries.
 
 %files -n trinity-libkonq-devel
 %defattr(-,root,root,-)
-%{tde_tdeincludedir}/tdefileivi.h
-%{tde_tdeincludedir}/kivdirectoryoverlay.h
-%{tde_tdeincludedir}/kivfreespaceoverlay.h
-%{tde_tdeincludedir}/knewmenu.h
-%{tde_tdeincludedir}/konqbookmarkmanager.h
-%{tde_tdeincludedir}/konq_*.h
-%{tde_tdeincludedir}/libkonq_export.h
-%{tde_libdir}/libkonq.la
-%{tde_libdir}/libkonq.so
+%{prefix}/include/tde/tdefileivi.h
+%{prefix}/include/tde/kivdirectoryoverlay.h
+%{prefix}/include/tde/kivfreespaceoverlay.h
+%{prefix}/include/tde/knewmenu.h
+%{prefix}/include/tde/konqbookmarkmanager.h
+%{prefix}/include/tde/konq_*.h
+%{prefix}/include/tde/libkonq_export.h
+%{prefix}/%{_lib}/libkonq.la
+%{prefix}/%{_lib}/libkonq.so
 
 ##########
 
@@ -2664,34 +2648,34 @@ Windows and Samba shares.
 
 %files tdeio-smb-plugin
 %defattr(-,root,root)
-%{tde_tdelibdir}/kcm_samba.la
-%{tde_tdelibdir}/kcm_samba.so
-%{tde_tdelibdir}/tdeio_smb.la
-%{tde_tdelibdir}/tdeio_smb.so
-%{tde_datadir}/services/smb.protocol
-%{tde_datadir}/apps/konqueror/dirtree/remote/smb-network.desktop
-%dir %{tde_datadir}/apps/remoteview
-%{tde_datadir}/apps/remoteview/smb-network.desktop
-%{tde_datadir}/mimelnk/application/x-smb-workgroup.desktop
+%{prefix}/%{_lib}/trinity/kcm_samba.la
+%{prefix}/%{_lib}/trinity/kcm_samba.so
+%{prefix}/%{_lib}/trinity/tdeio_smb.la
+%{prefix}/%{_lib}/trinity/tdeio_smb.so
+%{prefix}/share/services/smb.protocol
+%{prefix}/share/apps/konqueror/dirtree/remote/smb-network.desktop
+%dir %{prefix}/share/apps/remoteview
+%{prefix}/share/apps/remoteview/smb-network.desktop
+%{prefix}/share/mimelnk/application/x-smb-workgroup.desktop
 
 %prep -a
 # Applies an optional distro-specific graphical theme
 %if "%{?tde_bg}" != ""
 # TDM Background
-%__sed -i "%{tdm}/kfrontend/gen%{tdm}conf.c" \
+%__sed -i "tdm/kfrontend/gentdmconf.c" \
 	-e 's|"Wallpaper=isadora.png\n"|"Wallpaper=%{tde_bg}\n"|'
 
 # TDE user default background
 %__sed -i "kpersonalizer/keyecandypage.cpp" \
 	-e 's|#define DEFAULT_WALLPAPER "isadora.png"|#define DEFAULT_WALLPAPER "%{tde_bg}"|'
-%__sed -i "%{starttde}" \
-	-e 's|$TDEDIR/share/wallpapers/Trinity-lineart.svg.desktop|%{tde_bg}|' \
+%__sed -i "starttde" \
+	-e 's|%{prefix}/share/wallpapers/Trinity-lineart.svg.desktop|%{tde_bg}|' \
 	-e 's|Wallpaper=Trinity-lineart.svg|Wallpaper=%{tde_bg}|'
 %endif
 
 # TDE default directory and icon in startup script
-%__sed -i "%{starttde}" \
-	-e "s|/opt/trinity|%{tde_prefix}|g"
+%__sed -i "starttde" \
+	-e "s|/opt/trinity|%{prefix}|g"
 
 # Sets default TDE menu icon
 %if "%{tde_starticon}" != ""
@@ -2710,9 +2694,9 @@ elif [ -x "/usr/sbin/reboot" ]; then
 fi
 if [ -n "${REBOOT}" ]; then
   %__sed -i \
-    "doc/%{tdm}/%{tdm}rc-ref.docbook" \
-    "kcontrol/%{tdm}/%{tdm}-shut.cpp" \
-    "%{tdm}/config.def" \
+    "doc/tdm/tdmrc-ref.docbook" \
+    "kcontrol/tdm/tdm-shut.cpp" \
+    "tdm/config.def" \
   -e "s|/sbin/poweroff|${POWEROFF}|g" \
   -e "s|/sbin/reboot|${REBOOT}|g"
 fi
@@ -2743,14 +2727,13 @@ fi
 
 %conf -p
 unset QTDIR QTINC QTLIB
-export PATH="%{tde_bindir}:${PATH}"
-export PKG_CONFIG_PATH="%{tde_libdir}/pkgconfig:${PKG_CONFIG_PATH}"
-export TDEDIR="%{tde_prefix}"
+export PATH="%{prefix}/bin:${PATH}"
+export PKG_CONFIG_PATH="%{prefix}/%{_lib}/pkgconfig:${PKG_CONFIG_PATH}"
 
 %install -p
 # Symlinks 'usb.ids' (Use system-provided version, not TDE provided version)
-%__mkdir_p %{?buildroot}%{tde_datadir}/apps/
-%__ln_s -f "/usr/share/hwdata/usb.ids" "%{?buildroot}%{tde_datadir}/apps/usb.ids"
+%__mkdir_p %{?buildroot}%{prefix}/share/apps/
+%__ln_s -f "/usr/share/hwdata/usb.ids" "%{?buildroot}%{prefix}/share/apps/usb.ids"
 
 # Console font to fontconfig
 %__mkdir_p "%{buildroot}%{_sysconfdir}/fonts/conf.d"
@@ -2759,7 +2742,7 @@ cat <<EOF >"%{buildroot}%{_sysconfdir}/fonts/conf.d/99-konsole.conf"
 <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
 <fontconfig>
   <!-- Font directory list -->
-  <dir>%{tde_datadir}/apps/konsole/fonts</dir>
+  <dir>%{prefix}/share/apps/konsole/fonts</dir>
 </fontconfig>
 EOF
 
@@ -2776,29 +2759,29 @@ EOF
 
 # Adds missing icons in 'hicolor' theme
 # These icons are copied from 'crystalsvg' theme, provided by 'tdelibs'.
-%__mkdir_p "%{?buildroot}%{tde_datadir}/icons/hicolor/"{16x16,22x22,32x32,48x48,64x64,128x128}"/apps/"
-pushd "%{?buildroot}%{tde_datadir}/icons"
-for i in {16,32,48,64,128};    do %__cp %{tde_datadir}/icons/crystalsvg/"$i"x"$i"/mimetypes/application-vnd.tde.misc.png  hicolor/"$i"x"$i"/apps/kcmcomponentchooser.png  ;done
-for i in {16,22,32,48,128};    do %__cp %{tde_datadir}/icons/crystalsvg/"$i"x"$i"/actions/launch.png                      hicolor/"$i"x"$i"/apps/kcmperformance.png       ;done
-for i in 16;                   do %__cp %{tde_datadir}/icons/crystalsvg/"$i"x"$i"/actions/services.png                    hicolor/"$i"x"$i"/apps/kcmkded.png              ;done
-for i in {16,22,32,48};        do %__cp %{tde_datadir}/icons/crystalsvg/"$i"x"$i"/actions/system-log-out.png              hicolor/"$i"x"$i"/apps/kcmsmserver.png          ;done
-for i in {16,22,32};           do %__cp %{tde_datadir}/icons/crystalsvg/"$i"x"$i"/actions/tools-check-spelling.png        hicolor/"$i"x"$i"/apps/kcmspellchecking.png     ;done
-for i in {16,22,32,48,64,128}; do %__cp %{tde_datadir}/icons/crystalsvg/"$i"x"$i"/places/desktop.png                      hicolor/"$i"x"$i"/apps/kcmdesktopbehavior.png   ;done
-for i in {16,22,32,48,64,128}; do %__cp %{tde_datadir}/icons/crystalsvg/"$i"x"$i"/places/desktop.png                      hicolor/"$i"x"$i"/apps/kcmdesktop.png           ;done
-for i in {16,22,32,48,64,128}; do %__cp %{tde_datadir}/icons/crystalsvg/"$i"x"$i"/apps/kmenu.png                          hicolor/"$i"x"$i"/apps/kcmtaskbar.png           ;done
-for i in {16,22,32,48,64,128}; do %__cp %{tde_datadir}/icons/crystalsvg/"$i"x"$i"/mimetypes/application-x-kcsrc.png       hicolor/"$i"x"$i"/apps/kcmcolors.png            ;done
-for i in {16,22,32,48,128};    do %__cp %{tde_datadir}/icons/crystalsvg/"$i"x"$i"/actions/launch.png                      hicolor/"$i"x"$i"/apps/kcmlaunch.png            ;done
-for i in {16,22,32};           do %__cp %{tde_datadir}/icons/crystalsvg/"$i"x"$i"/actions/filter.png                      hicolor/"$i"x"$i"/apps/kcmkhtml_filter.png      ;done
-for i in {16,22,32};           do %__cp %{tde_datadir}/icons/crystalsvg/"$i"x"$i"/actions/system-run.png                  hicolor/"$i"x"$i"/apps/kcmcgi.png               ;done
-for i in {16,22};              do %__cp %{tde_datadir}/icons/crystalsvg/"$i"x"$i"/actions/history.png                     hicolor/"$i"x"$i"/apps/kcmhistory.png           ;done
-for i in {16,22,32,48,64,128}; do %__cp %{tde_datadir}/icons/crystalsvg/"$i"x"$i"/places/network.png                      hicolor/"$i"x"$i"/apps/kcmnetpref.png           ;done
-for i in {16,32,48,64,128};    do %__cp %{tde_datadir}/icons/crystalsvg/"$i"x"$i"/devices/blockdevice.png                 hicolor/"$i"x"$i"/apps/kcmkdnssd.png            ;done
-for i in {16,22,32,48,64};     do %__cp %{tde_datadir}/icons/crystalsvg/"$i"x"$i"/devices/input-joystick.png              hicolor/"$i"x"$i"/apps/kcmjoystick.png          ;done
-for i in {16,32,48,64,128};    do %__cp %{tde_datadir}/icons/crystalsvg/"$i"x"$i"/devices/input-mouse.png                 hicolor/"$i"x"$i"/apps/kcmmouse.png             ;done
-for i in {16,22,32,48,64,128}; do %__cp %{tde_datadir}/icons/crystalsvg/"$i"x"$i"/devices/computer.png                    hicolor/"$i"x"$i"/apps/kcmmedia.png             ;done
-for i in {16,22,32};           do %__cp %{tde_datadir}/icons/crystalsvg/"$i"x"$i"/actions/encrypted.png                   hicolor/"$i"x"$i"/apps/kcmcrypto.png            ;done
-for i in {16,22,32,48,64,128}; do %__cp %{tde_datadir}/icons/crystalsvg/"$i"x"$i"/places/trashcan_empty.png               hicolor/"$i"x"$i"/apps/kcmprivacy.png           ;done
-for i in {16,22,32,48,64,128}; do %__cp %{tde_datadir}/icons/crystalsvg/"$i"x"$i"/places/network.png                      hicolor/"$i"x"$i"/apps/kcmnic.png               ;done
+%__mkdir_p "%{?buildroot}%{prefix}/share/icons/hicolor/"{16x16,22x22,32x32,48x48,64x64,128x128}"/apps/"
+pushd "%{?buildroot}%{prefix}/share/icons"
+for i in {16,32,48,64,128};    do %__cp %{prefix}/share/icons/crystalsvg/"$i"x"$i"/mimetypes/application-vnd.tde.misc.png  hicolor/"$i"x"$i"/apps/kcmcomponentchooser.png  ;done
+for i in {16,22,32,48,128};    do %__cp %{prefix}/share/icons/crystalsvg/"$i"x"$i"/actions/launch.png                      hicolor/"$i"x"$i"/apps/kcmperformance.png       ;done
+for i in 16;                   do %__cp %{prefix}/share/icons/crystalsvg/"$i"x"$i"/actions/services.png                    hicolor/"$i"x"$i"/apps/kcmkded.png              ;done
+for i in {16,22,32,48};        do %__cp %{prefix}/share/icons/crystalsvg/"$i"x"$i"/actions/system-log-out.png              hicolor/"$i"x"$i"/apps/kcmsmserver.png          ;done
+for i in {16,22,32};           do %__cp %{prefix}/share/icons/crystalsvg/"$i"x"$i"/actions/tools-check-spelling.png        hicolor/"$i"x"$i"/apps/kcmspellchecking.png     ;done
+for i in {16,22,32,48,64,128}; do %__cp %{prefix}/share/icons/crystalsvg/"$i"x"$i"/places/desktop.png                      hicolor/"$i"x"$i"/apps/kcmdesktopbehavior.png   ;done
+for i in {16,22,32,48,64,128}; do %__cp %{prefix}/share/icons/crystalsvg/"$i"x"$i"/places/desktop.png                      hicolor/"$i"x"$i"/apps/kcmdesktop.png           ;done
+for i in {16,22,32,48,64,128}; do %__cp %{prefix}/share/icons/crystalsvg/"$i"x"$i"/apps/kmenu.png                          hicolor/"$i"x"$i"/apps/kcmtaskbar.png           ;done
+for i in {16,22,32,48,64,128}; do %__cp %{prefix}/share/icons/crystalsvg/"$i"x"$i"/mimetypes/application-x-kcsrc.png       hicolor/"$i"x"$i"/apps/kcmcolors.png            ;done
+for i in {16,22,32,48,128};    do %__cp %{prefix}/share/icons/crystalsvg/"$i"x"$i"/actions/launch.png                      hicolor/"$i"x"$i"/apps/kcmlaunch.png            ;done
+for i in {16,22,32};           do %__cp %{prefix}/share/icons/crystalsvg/"$i"x"$i"/actions/filter.png                      hicolor/"$i"x"$i"/apps/kcmkhtml_filter.png      ;done
+for i in {16,22,32};           do %__cp %{prefix}/share/icons/crystalsvg/"$i"x"$i"/actions/system-run.png                  hicolor/"$i"x"$i"/apps/kcmcgi.png               ;done
+for i in {16,22};              do %__cp %{prefix}/share/icons/crystalsvg/"$i"x"$i"/actions/history.png                     hicolor/"$i"x"$i"/apps/kcmhistory.png           ;done
+for i in {16,22,32,48,64,128}; do %__cp %{prefix}/share/icons/crystalsvg/"$i"x"$i"/places/network.png                      hicolor/"$i"x"$i"/apps/kcmnetpref.png           ;done
+for i in {16,32,48,64,128};    do %__cp %{prefix}/share/icons/crystalsvg/"$i"x"$i"/devices/blockdevice.png                 hicolor/"$i"x"$i"/apps/kcmkdnssd.png            ;done
+for i in {16,22,32,48,64};     do %__cp %{prefix}/share/icons/crystalsvg/"$i"x"$i"/devices/input-joystick.png              hicolor/"$i"x"$i"/apps/kcmjoystick.png          ;done
+for i in {16,32,48,64,128};    do %__cp %{prefix}/share/icons/crystalsvg/"$i"x"$i"/devices/input-mouse.png                 hicolor/"$i"x"$i"/apps/kcmmouse.png             ;done
+for i in {16,22,32,48,64,128}; do %__cp %{prefix}/share/icons/crystalsvg/"$i"x"$i"/devices/computer.png                    hicolor/"$i"x"$i"/apps/kcmmedia.png             ;done
+for i in {16,22,32};           do %__cp %{prefix}/share/icons/crystalsvg/"$i"x"$i"/actions/encrypted.png                   hicolor/"$i"x"$i"/apps/kcmcrypto.png            ;done
+for i in {16,22,32,48,64,128}; do %__cp %{prefix}/share/icons/crystalsvg/"$i"x"$i"/places/trashcan_empty.png               hicolor/"$i"x"$i"/apps/kcmprivacy.png           ;done
+for i in {16,22,32,48,64,128}; do %__cp %{prefix}/share/icons/crystalsvg/"$i"x"$i"/places/network.png                      hicolor/"$i"x"$i"/apps/kcmnic.png               ;done
 popd
 
 # PAM configuration files (except openSUSE)
@@ -2810,31 +2793,30 @@ popd
 %install -a
 # Makes 'media_safelyremove.desktop' an alternative.
 # This allows the use of 'tdeio-umountwrapper' package.
-%__mv -f "%{buildroot}%{tde_datadir}/apps/konqueror/servicemenus/media_safelyremove.desktop" "%{buildroot}%{tde_datadir}/apps/konqueror/servicemenus/media_safelyremove.desktop_tdebase"
+%__mv -f "%{buildroot}%{prefix}/share/apps/konqueror/servicemenus/media_safelyremove.desktop" "%{buildroot}%{prefix}/share/apps/konqueror/servicemenus/media_safelyremove.desktop_tdebase"
 %__mkdir_p "%{buildroot}%{_sysconfdir}/alternatives"
-%__ln_s "media_safelyremove.desktop_tdebase" "%{buildroot}%{_sysconfdir}/alternatives/media_safelyremove.desktop"
 
 # Adds a GDM/KDM/XDM session called 'TDE'
 %__install -D -m 644 \
-	"%{?buildroot}%{tdm_datadir}/sessions/tde.desktop" \
+	"%{?buildroot}%{prefix}/share/apps/tdm/sessions/tde.desktop" \
 	"%{?buildroot}%{_datadir}/xsessions/tde.desktop"
 
 # Move faces icon to XDG directory '/usr/share/faces'
 if [ ! -d "%{?buildroot}%{_datadir}/faces" ]; then
   %__mkdir_p "%{?buildroot}%{_datadir}/faces"
-  %__mv -f "%{?buildroot}%{tdm_datadir}/pics/users/"* "%{?buildroot}%{_datadir}/faces" 2>/dev/null
-  rmdir "%{?buildroot}%{tdm_datadir}/pics/users"
+  %__mv -f "%{?buildroot}%{prefix}/share/apps/tdm/pics/users/"* "%{?buildroot}%{_datadir}/faces" 2>/dev/null
+  rmdir "%{?buildroot}%{prefix}/share/apps/tdm/pics/users"
 fi
-%__ln_s "%{_datadir}/faces" "%{?buildroot}%{tdm_datadir}/pics/users"
+%__ln_s "%{_datadir}/faces" "%{?buildroot}%{prefix}/share/apps/tdm/pics/users"
 
 %__install -d -m 755 %{?buildroot}%{_sysconfdir}/X11/wmsession.d
 cat <<EOF >"%{?buildroot}%{_sysconfdir}/X11/wmsession.d/45TDE"
 NAME=TDE
 ICON=kde-wmsession.xpm
 DESC=The Trinity Desktop Environment
-EXEC=%{tde_bindir}/%{starttde}
+EXEC=%{prefix}/bin/starttde
 SCRIPT:
-exec %{tde_bindir}/%{starttde}
+exec %{prefix}/bin/starttde
 EOF
 
 %__install -d -m 755 %{?buildroot}%{_datadir}/X11/dm.d
@@ -2842,14 +2824,14 @@ cat <<EOF >"%{?buildroot}%{_datadir}/X11/dm.d/45TDE.conf"
 NAME=TDM
 DESCRIPTION=TDM (Trinity Display Manager)
 PACKAGE=trinity-tdm
-EXEC=%{tde_bindir}/%{tdm}
+EXEC=%{prefix}/bin/tdm
+EOF
 
 # TDM configuration
-%__sed -i "%{?buildroot}%{tde_confdir}/%{tdm}/%{tdm}rc" \
-	-e "s/^#*MinShowUID=.*/MinShowUID=1000/"
+%__sed -i "s/^#*MinShowUID=.*\b/MinShowUID=1000/" "%{buildroot}%{_sysconfdir}/trinity/tdm/tdmrc"
 
 # Icons from TDE Control Center should only be displayed in TDE
-for i in %{?buildroot}%{tde_tdeappdir}/*.desktop ; do
+for i in %{?buildroot}%{prefix}/share/applications/tde/*.desktop ; do
   if grep -q "^Categories=.*X-TDE-settings" "${i}"; then
     if ! grep -q "OnlyShowIn=TDE" "${i}" ; then
       echo "OnlyShowIn=TDE;" >>"${i}"
@@ -2859,36 +2841,36 @@ done
 
 # Other apps that should stay in TDE
 for i in ksysguard tde-kcontrol tdefontview showdesktop; do
-  echo "OnlyShowIn=TDE;" >>"%{?buildroot}%{tde_tdeappdir}/${i}.desktop"
+  echo "OnlyShowIn=TDE;" >>"%{?buildroot}%{prefix}/share/applications/tde/${i}.desktop"
 done
 
 # Remove setuid bit on some binaries.
-%{?with_tsak:chmod 0511 "%{?buildroot}%{tde_bindir}/%{tdm}tsak"}
-chmod 0755 "%{?buildroot}%{tde_bindir}/kcheckpass"
-%{?with_kbdledsync:chmod 0755 "%{?buildroot}%{tde_bindir}/tdekbdledsync"}
+%{?with_tsak:chmod 0511 "%{?buildroot}%{prefix}/bin/tdmtsak"}
+chmod 0755 "%{?buildroot}%{prefix}/bin/kcheckpass"
+%{?with_kbdledsync:chmod 0755 "%{?buildroot}%{prefix}/bin/tdekbdledsync"}
 
 # Fix permissions on shell scripts
-chmod 0755 "%{?buildroot}%{tde_datadir}/apps/tdeconf_update/move_session_config.sh"
-chmod 0755 "%{?buildroot}%{tde_tdedocdir}/HTML/en/khelpcenter/glossary/checkxrefs"
+chmod 0755 "%{?buildroot}%{prefix}/share/apps/tdeconf_update/move_session_config.sh"
+chmod 0755 "%{?buildroot}%{prefix}/share/doc/tde/HTML/en/khelpcenter/glossary/checkxrefs"
 
 # Links duplicate files
-%fdupes "%{?buildroot}%{tde_datadir}"
+%fdupes "%{?buildroot}%{prefix}/share"
 
 # fix desktop icon names per XDG spec
-mv %{?buildroot}/%{tde_prefix}/share/apps/kdesktop/Desktop/My_Computer %{buildroot}/%{tde_prefix}/share/apps/kdesktop/Desktop/My_Computer.desktop
-mv %{?buildroot}/%{tde_prefix}/share/apps/kdesktop/Desktop/My_Documents %{buildroot}/%{tde_prefix}/share/apps/kdesktop/Desktop/My_Documents.desktop
-mv %{?buildroot}/%{tde_prefix}/share/apps/kdesktop/Desktop/My_Network_Places %{buildroot}/%{tde_prefix}/share/apps/kdesktop/Desktop/My_Network_Places.desktop
-mv %{?buildroot}/%{tde_prefix}/share/apps/kdesktop/Desktop/Printers %{buildroot}/%{tde_prefix}/share/apps/kdesktop/Desktop/Printers.desktop
-mv %{?buildroot}/%{tde_prefix}/share/apps/kdesktop/Desktop/Trash %{buildroot}/%{tde_prefix}/share/apps/kdesktop/Desktop/Trash.desktop
-mv %{?buildroot}/%{tde_prefix}/share/apps/kdesktop/Desktop/Web_Browser %{buildroot}/%{tde_prefix}/share/apps/kdesktop/Desktop/Web_Browser.desktop
+mv %{?buildroot}/%{prefix}/share/apps/kdesktop/Desktop/My_Computer %{buildroot}/%{prefix}/share/apps/kdesktop/Desktop/My_Computer.desktop
+mv %{?buildroot}/%{prefix}/share/apps/kdesktop/Desktop/My_Documents %{buildroot}/%{prefix}/share/apps/kdesktop/Desktop/My_Documents.desktop
+mv %{?buildroot}/%{prefix}/share/apps/kdesktop/Desktop/My_Network_Places %{buildroot}/%{prefix}/share/apps/kdesktop/Desktop/My_Network_Places.desktop
+mv %{?buildroot}/%{prefix}/share/apps/kdesktop/Desktop/Printers %{buildroot}/%{prefix}/share/apps/kdesktop/Desktop/Printers.desktop
+mv %{?buildroot}/%{prefix}/share/apps/kdesktop/Desktop/Trash %{buildroot}/%{prefix}/share/apps/kdesktop/Desktop/Trash.desktop
+mv %{?buildroot}/%{prefix}/share/apps/kdesktop/Desktop/Web_Browser %{buildroot}/%{prefix}/share/apps/kdesktop/Desktop/Web_Browser.desktop
 
 # Removes obsolete Beagle-related files
-%__rm -f %{?buildroot}%{tde_bindir}/khc_beagle_index.pl
-%__rm -f %{?buildroot}%{tde_bindir}/khc_beagle_search.pl
+%__rm -f %{?buildroot}%{prefix}/bin/khc_beagle_index.pl
+%__rm -f %{?buildroot}%{prefix}/bin/khc_beagle_search.pl
 
 # Remove conflicting doc
-%__rm -rf "%{?buildroot}%{tde_tdedocdir}/HTML/en/tdeioslave/gopher"
+%__rm -rf "%{?buildroot}%{prefix}/share/doc/tde/HTML/en/tdeioslave/gopher"
 
 # Removes tderandrtray documentation, if not built.
-%{!?with_tderandrtray:%__rm -rf "%{?buildroot}%{tde_tdedocdir}/HTML/en/tderandrtray"}
+%{!?with_tderandrtray:%__rm -rf "%{?buildroot}%{prefix}/share/doc/tde/HTML/en/tderandrtray"}
 
