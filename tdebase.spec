@@ -21,7 +21,7 @@
 %if "%{?tde_version}" == ""
 %define tde_version 14.1.5
 %endif
-%define pkg_rel 4
+%define pkg_rel 5
 
 %define tde_pkg tdebase
 
@@ -67,16 +67,9 @@ Provides:	tdebase = %{?epoch:%{epoch}:}%{version}-%{release}
 BuildSystem:  cmake
 
 BuildOption:  -DCMAKE_BUILD_TYPE="RelWithDebInfo"
-BuildOption:  -DCMAKE_SKIP_RPATH=OFF
-BuildOption:  -DCMAKE_SKIP_INSTALL_RPATH=OFF
-BuildOption:  -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON
-BuildOption:  -DCMAKE_INSTALL_RPATH="%{tde_prefix}/%{_lib}"
-BuildOption:  -DBIN_INSTALL_DIR="%{tde_prefix}/bin"
-BuildOption:  -DCONFIG_INSTALL_DIR="%{_sysconfdir}/trinity"
+BuildOption:  -DCONFIG_INSTALL_DIR=%{_sysconfdir}/trinity
+BuildOption:  -DCMAKE_INSTALL_PREFIX=%{tde_prefix}
 BuildOption:  -DINCLUDE_INSTALL_DIR="%{tde_prefix}/include/tde"
-BuildOption:  -DLIB_INSTALL_DIR="%{tde_prefix}/%{_lib}"
-BuildOption:  -DSHARE_INSTALL_PREFIX="%{tde_prefix}/share"
-BuildOption:  -DCONFIG_INSTALL_DIR="%{_sysconfdir}/trinity"
 BuildOption:  -DSYSCONF_INSTALL_DIR="%{_sysconfdir}/trinity"
 BuildOption:  -DXDG_MENU_INSTALL_DIR="%{_sysconfdir}/xdg/menus"
 BuildOption:  -DWITH_ALL_OPTIONS=ON -DWITH_SASL=ON -DWITH_LDAP=ON
