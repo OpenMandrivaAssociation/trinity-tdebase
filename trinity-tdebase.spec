@@ -17,12 +17,6 @@
 %bcond systemd 1
 
 # TDE variables
-%define tde_epoch 2
-%if "%{?tde_version}" == ""
-%define tde_version 14.1.5
-%endif
-%define pkg_rel 5
-
 %define tde_pkg tdebase
 
 %define tde_prefix /opt/trinity
@@ -36,33 +30,22 @@
 
 %define tarball_name %{tde_pkg}-trinity
 
-
 Name:			trinity-%{tde_pkg}
-Version:		%{tde_version}
-Release:		%{?!preversion:%{pkg_rel}}%{?preversion:0_%{preversion}}%{?dist}
+Version:		14.1.5
+Release:		6
 Summary:		Trinity Base Programs
 Group:			System/GUI/Other
 URL:			http://www.trinitydesktop.org/
 
 License:		GPLv2+
 
-
-Source0:		https://mirror.ppa.trinitydesktop.org/trinity/releases/R%{tde_version}/main/core/%{tarball_name}-%{version}%{?preversion:~%{preversion}}.tar.xz
+Source0:		https://mirror.ppa.trinitydesktop.org/trinity/releases/R%{version}/main/core/%{tarball_name}-%{version}.tar.xz
 Source1:		%{name}-rpmlintrc
 
 Source2:		pamd.kdm-trinity.omv
 Source3:		pamd.kdm-trinity-np.omv
 Source4:		pamd.kcheckpass-trinity.omv
 Source5:		pamd.kscreensaver-trinity.omv
-
-Obsoletes:	trinity-kdebase < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:	trinity-kdebase = %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes:	trinity-kdebase-libs < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:	trinity-kdebase-libs = %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes:	trinity-kdebase-extras < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:	trinity-kdebase-extras = %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes:	tdebase < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:	tdebase = %{?epoch:%{epoch}:}%{version}-%{release}
 
 BuildSystem:  cmake
 
@@ -103,10 +86,10 @@ BuildOption:  -DBUILD_TSAK=%{!?with_tsak:OFF}%{?with_tsak:ON}
 Requires:	distro-release-theme
 %define tde_bg /usr/share/wallpapers/default.png
 
-BuildRequires:	trinity-arts-devel >= %{tde_epoch}:1.5.10
-BuildRequires:	trinity-tdelibs-devel >= %{tde_version}
+BuildRequires:	%{_lib}arts-devel >= %version
+BuildRequires:	trinity-tdelibs-devel >= %version
 
-BuildRequires:	trinity-tde-cmake >= %{tde_version}
+BuildRequires:	trinity-tde-cmake >= %version
 
 %{!?with_clang:BuildRequires:	gcc-c++}
 
@@ -198,15 +181,14 @@ BuildRequires:  xscreensaver-base
 %endif
 
 # AVAHI support
-BuildRequires:	libavahi-tqt-devel
+BuildRequires:	pkgconfig(avahi-tqt)
 
 # MESA support
 BuildRequires:  pkgconfig(glu)
 
 # DBUS support
-BuildRequires:	libdbus-tqt-1-devel >= %{tde_epoch}:0.63
-BuildRequires:	libdbus-1-tqt-devel >= %{tde_epoch}:0.9
-Requires:		libdbus-tqt-1-0 >= %{tde_epoch}:0.63
+BuildRequires:	pkgconfig(dbus-tqt)
+BuildRequires:	pkgconfig(dbus-1-tqt)
 
 # LIBART_LGPL support
 %{?with_libart:BuildRequires:	pkgconfig(libart-2.0)}
@@ -291,9 +273,6 @@ Requires: trinity-libkonq = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires: %{name}-libtqt3-integration = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires: %{name}-tdeio-smb-plugin = %{?epoch:%{epoch}:}%{version}-%{release}
  
-Requires:	trinity-arts >= %{tde_epoch}:1.5.10
-Requires:	trinity-tdelibs >= %{tde_version}
-
 %description
 TDE (the Trinity Desktop Environment) is a powerful Open Source graphical
 desktop environment for Unix workstations. It combines ease of use,
@@ -318,8 +297,6 @@ web browser, X terminal emulator, and many other programs and components.
 Summary:	%{summary} - Development files
 Group:		Development/Libraries/Other
 Requires:	%{name} = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	trinity-arts-devel >= %{tde_epoch}:1.5.10
-Requires:	trinity-tdelibs-devel >= %{tde_version}
 
 Requires:	%{name}-bin-devel = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:	trinity-kate-devel = %{?epoch:%{epoch}:}%{version}-%{release}
@@ -332,11 +309,6 @@ Requires:	trinity-ksysguard-devel = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:	trinity-libkonq-devel = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:	trinity-tdm-devel = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:	trinity-twin-devel = %{?epoch:%{epoch}:}%{version}-%{release}
-
-Provides:	trinity-kdebase-devel = %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes:	trinity-kdebase-devel < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:	tdebase-devel = %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes:	tdebase-devel < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description devel
 This is a meta-package that installs all tdebase development packages.
@@ -354,13 +326,6 @@ Kate plugins or TWin styles.
 %package tdeio-pim-plugins
 Summary:	PIM TDEIOslaves from %{name}
 Group:		System/GUI/Other
-
-Provides:	trinity-kdebase-pim-ioslaves = %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes:	trinity-kdebase-pim-ioslaves < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:	tdebase-kio-pim-plugins = %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes:	tdebase-kio-pim-plugins < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:	trinity-tdebase-kio-pim-plugins = %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes:	trinity-tdebase-kio-pim-plugins < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description tdeio-pim-plugins
 Protocol handlers (TDEIOslaves) for personal information management, including:
@@ -393,9 +358,6 @@ Protocol handlers (TDEIOslaves) for personal information management, including:
 %package runtime-data-common
 Summary:	Shared common files for Trinity and KDE4
 Group:		System/GUI/Other
-
-Provides:	tdebase-runtime-data-common = %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes:	tdebase-runtime-data-common < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description runtime-data-common
 Shared common files for both Trinity and KDE4
@@ -868,9 +830,6 @@ Group:		System/GUI/Other
 Requires:	%{name}-data = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:	pam
 
-Provides:	tdebase-bin = %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes:	tdebase-bin < %{?epoch:%{epoch}:}%{version}-%{release}
-
 %description bin
 This package contains miscellaneous programs needed by other
 TDE applications, particularly those in the TDE base module.
@@ -983,9 +942,6 @@ Group:		Development/Libraries/Other
 Requires:	%{name}-bin = %{?epoch:%{epoch}:}%{version}-%{release}
 %{?with_xtst:Requires: pkgconfig(xtst)}
 
-Obsoletes:	tdebase-bin-devel < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:	tdebase-bin-devel = %{?epoch:%{epoch}:}%{version}-%{release}
-
 %description bin-devel
 This package contains the development files for core binaries for 
 the TDE base module
@@ -1001,9 +957,6 @@ the TDE base module
 Summary:	Shared data files for the TDE base module
 Group:		System/GUI/Other
 Requires:	%{name}-runtime-data-common = %{?epoch:%{epoch}:}%{version}-%{release}
-
-Obsoletes:	tdebase-data < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:	tdebase-data = %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description data
 This package contains the architecture-independent shared data files
@@ -1284,11 +1237,6 @@ Requires:	trinity-kdesktop = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:	cyrus-sasl
 Requires:	psmisc
 
-Obsoletes:	tdebase-kio-plugins < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:	tdebase-kio-plugins = %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes:	trinity-tdebase-kio-plugins < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:	trinity-tdebase-kio-plugins = %{?epoch:%{epoch}:}%{version}-%{release}
-
 %description tdeio-plugins
 This package includes the base tdeioslaves. They include, amongst many
 others, file, http, and ftp.
@@ -1453,9 +1401,6 @@ group.
 Summary:	Password changer for TDE
 Group:		System/GUI/Other
 
-Obsoletes:	trinity-kdepasswd < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:	trinity-kdepasswd = %{?epoch:%{epoch}:}%{version}-%{release}
-
 %description -n trinity-tdepasswd
 This is a simple application which allows users to change their
 system passwords.
@@ -1574,9 +1519,7 @@ Requires:	%{name}-bin = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:	%{name}-data = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:	trinity-libkonq = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:	eject
-%if 0%{?rhel} >= 5 || 0%{?fedora} || 0%{?mgaversion} || 0%{?mdkversion} || 0%{?pclinuxos}
 Requires:	xdg-utils
-%endif
 
 %description -n trinity-kdesktop
 This package contains miscellaneous binaries and files integral to
@@ -2589,9 +2532,6 @@ Konqueror and the kdesktop package.
 %package libtqt3-integration
 Summary:	Integration library between TQt3 and TDE
 Group:		System/GUI/Other
-
-Obsoletes:	tdebase-libtqt3-integration < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:	tdebase-libtqt3-integration = %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description libtqt3-integration
 These libraries allow you to use TDE dialogs in native TQt3 applications.
