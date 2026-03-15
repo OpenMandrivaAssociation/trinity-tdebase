@@ -240,38 +240,38 @@ BuildRequires: pkgconfig(libattr)
 %{?with_ssh:BuildRequires:	libssh-devel}
 
 # tdebase is a metapackage that installs all sub-packages
-Requires: %{name}-runtime-data-common = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: %{name}-data = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: %{name}-bin = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: %{name}-tdeio-plugins = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: %{name}-tdeio-pim-plugins = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-kappfinder = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-kate = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-kwrite = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-kcontrol = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-tdepasswd = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-tdeprint = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-kdesktop = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-tdm = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-kfind = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-khelpcenter = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-kicker = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-klipper = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-kmenuedit = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-konqueror = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-konqueror-nsplugins = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-konsole = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-kpager = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-kpersonalizer = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-ksmserver = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-ksplash = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-ksysguard = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-ksysguardd = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-ktip = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-twin = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-libkonq = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: %{name}-libtqt3-integration = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: %{name}-tdeio-smb-plugin = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires: %{name}-runtime-data-common = %{EVRD}
+Requires: %{name}-data = %{EVRD}
+Requires: %{name}-bin = %{EVRD}
+Requires: %{name}-tdeio-plugins = %{EVRD}
+Requires: %{name}-tdeio-pim-plugins = %{EVRD}
+Requires: trinity-kappfinder = %{EVRD}
+Requires: trinity-kate = %{EVRD}
+Requires: trinity-kwrite = %{EVRD}
+Requires: trinity-kcontrol = %{EVRD}
+Requires: trinity-tdepasswd = %{EVRD}
+Requires: trinity-tdeprint = %{EVRD}
+Requires: trinity-kdesktop = %{EVRD}
+Requires: trinity-tdm = %{EVRD}
+Requires: trinity-kfind = %{EVRD}
+Requires: trinity-khelpcenter = %{EVRD}
+Requires: trinity-kicker = %{EVRD}
+Requires: trinity-klipper = %{EVRD}
+Requires: trinity-kmenuedit = %{EVRD}
+Requires: trinity-konqueror = %{EVRD}
+Requires: trinity-konqueror-nsplugins = %{EVRD}
+Requires: trinity-konsole = %{EVRD}
+Requires: trinity-kpager = %{EVRD}
+Requires: trinity-kpersonalizer = %{EVRD}
+Requires: trinity-ksmserver = %{EVRD}
+Requires: trinity-ksplash = %{EVRD}
+Requires: trinity-ksysguard = %{EVRD}
+Requires: trinity-ksysguardd = %{EVRD}
+Requires: trinity-ktip = %{EVRD}
+Requires: trinity-twin = %{EVRD}
+Requires: trinity-libkonq = %{EVRD}
+Requires: %{name}-libtqt3-integration = %{EVRD}
+Requires: %{name}-tdeio-smb-plugin = %{EVRD}
  
 %description
 TDE (the Trinity Desktop Environment) is a powerful Open Source graphical
@@ -296,19 +296,19 @@ web browser, X terminal emulator, and many other programs and components.
 %package devel
 Summary:	%{summary} - Development files
 Group:		Development/Libraries/Other
-Requires:	%{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	%{name} = %{EVRD}
 
-Requires:	%{name}-bin-devel = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	trinity-kate-devel = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	trinity-kcontrol-devel = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	trinity-kdesktop-devel = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	trinity-kicker-devel = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	trinity-konqueror-devel = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	trinity-ksplash-devel = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	trinity-ksysguard-devel = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	trinity-libkonq-devel = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	trinity-tdm-devel = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	trinity-twin-devel = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	%{name}-bin-devel = %{EVRD}
+Requires:	trinity-kate-devel = %{EVRD}
+Requires:	trinity-kcontrol-devel = %{EVRD}
+Requires:	trinity-kdesktop-devel = %{EVRD}
+Requires:	trinity-kicker-devel = %{EVRD}
+Requires:	trinity-konqueror-devel = %{EVRD}
+Requires:	trinity-ksplash-devel = %{EVRD}
+Requires:	trinity-ksysguard-devel = %{EVRD}
+Requires:	trinity-libkonq-devel = %{EVRD}
+Requires:	trinity-tdm-devel = %{EVRD}
+Requires:	trinity-twin-devel = %{EVRD}
 
 %description devel
 This is a meta-package that installs all tdebase development packages.
@@ -384,7 +384,7 @@ Such as the desktop right-click-"Create New" list
 %package -n trinity-kappfinder
 Summary:	Non-TDE application finder for TDE
 Group:		System/GUI/Other
-Requires:	%{name}-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	%{name}-data = %{EVRD}
 
 %description -n trinity-kappfinder
 kappfinder searches your workstation for many common applications and
@@ -417,9 +417,9 @@ This package contains the kateinterface library.
 %package -n trinity-kate
 Summary:	Advanced text editor for TDE
 Group:		System/GUI/Other
-Requires:	%{name}-data = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	trinity-kwrite = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	trinity-libkateinterfaces = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	%{name}-data = %{EVRD}
+Requires:	trinity-kwrite = %{EVRD}
+Requires:	trinity-libkateinterfaces = %{EVRD}
 
 %description -n trinity-kate
 Kate is a multi document editor, based on a rewritten version of the kwrite
@@ -463,7 +463,7 @@ Some random features:
 %package -n trinity-kate-devel
 Summary:	Development files for kate
 Group:		Development/Libraries/Other
-Requires:	trinity-kate = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-kate = %{EVRD}
 
 %description -n trinity-kate-devel
 This package contains the development files fare Kate.
@@ -481,8 +481,8 @@ This package contains the development files fare Kate.
 %package -n trinity-kwrite
 Summary:	Advanced text editor for TDE
 Group:		System/GUI/Other
-Requires:	%{name}-data = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	trinity-libkateinterfaces = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	%{name}-data = %{EVRD}
+Requires:	trinity-libkateinterfaces = %{EVRD}
 
 %description -n trinity-kwrite
 Kwrite is an advanced text editor for TDE.
@@ -506,7 +506,7 @@ Kwrite is an advanced text editor for TDE.
 %package -n trinity-kcontrol
 Summary:	Control center for TDE
 Group:		System/GUI/Other
-Requires:	%{name}-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	%{name}-data = %{EVRD}
 
 # Requires 'usb.ids'
 Requires:		usbutils
@@ -812,7 +812,7 @@ plugdev group.
 %package -n trinity-kcontrol-devel
 Summary:	Development files for kcontrol
 Group:		Development/Libraries/Other
-Requires:	trinity-kcontrol = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-kcontrol = %{EVRD}
 
 %description -n trinity-kcontrol-devel
 %{summary}.
@@ -827,7 +827,7 @@ Requires:	trinity-kcontrol = %{?epoch:%{epoch}:}%{version}-%{release}
 %package bin
 Summary:	Core binaries for the TDE base module
 Group:		System/GUI/Other
-Requires:	%{name}-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	%{name}-data = %{EVRD}
 Requires:	pam
 
 %description bin
@@ -939,7 +939,7 @@ TDE applications, particularly those in the TDE base module.
 %package bin-devel
 Summary:	Development files for core binaries for the TDE base module
 Group:		Development/Libraries/Other
-Requires:	%{name}-bin = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	%{name}-bin = %{EVRD}
 %{?with_xtst:Requires: pkgconfig(xtst)}
 
 %description bin-devel
@@ -956,7 +956,7 @@ the TDE base module
 %package data
 Summary:	Shared data files for the TDE base module
 Group:		System/GUI/Other
-Requires:	%{name}-runtime-data-common = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	%{name}-runtime-data-common = %{EVRD}
 
 %description data
 This package contains the architecture-independent shared data files
@@ -1233,7 +1233,7 @@ needed for a basic TDE desktop installation.
 %package tdeio-plugins
 Summary:	Core I/O slaves for TDE
 Group:		System/GUI/Other
-Requires:	trinity-kdesktop = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-kdesktop = %{EVRD}
 Requires:	cyrus-sasl
 Requires:	psmisc
 
@@ -1450,7 +1450,7 @@ system passwords.
 %package -n trinity-tdeprint
 Summary:	Print system for TDE
 Group:		System/GUI/Other
-Requires:	%{name}-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	%{name}-data = %{EVRD}
 Requires:	psutils
 
 %description -n trinity-tdeprint
@@ -1515,9 +1515,9 @@ Installation of smbclient will make you able to use smb shared printers.
 %package -n trinity-kdesktop
 Summary:	Miscellaneous binaries and files for the TDE desktop
 Group:		System/GUI/Other
-Requires:	%{name}-bin = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	%{name}-data = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	trinity-libkonq = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	%{name}-bin = %{EVRD}
+Requires:	%{name}-data = %{EVRD}
+Requires:	trinity-libkonq = %{EVRD}
 Requires:	eject
 Requires:	xdg-utils
 
@@ -1551,7 +1551,7 @@ the TDE desktop.
 %package -n trinity-kdesktop-devel
 Summary:	Development files for kdesktop
 Group:		Development/Libraries/Other
-Requires:	trinity-kdesktop = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-kdesktop = %{EVRD}
 
 %description -n trinity-kdesktop-devel
 This package contains the development files for kdesktop.
@@ -1567,8 +1567,8 @@ This package contains the development files for kdesktop.
 %package -n trinity-tdm
 Summary:	X Display manager for TDE
 Group:		System/GUI/Other
-Requires:	%{name}-bin = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	%{name}-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	%{name}-bin = %{EVRD}
+Requires:	%{name}-data = %{EVRD}
 Requires:	pam
 Requires:	logrotate
 
@@ -1694,7 +1694,7 @@ fi
 %package -n trinity-tdm-devel
 Summary:	Development files for tdm
 Group:		Development/Libraries/Other
-Requires:	trinity-tdm = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-tdm = %{EVRD}
 %{?with_xtst:Requires: pkgconfig(xtst)}
 
 %description -n trinity-tdm-devel
@@ -1709,7 +1709,7 @@ This package contains the development files for TDM.
 %package -n trinity-kfind
 Summary:	File-find utility for TDE
 Group:		System/GUI/Other
-Requires:	%{name}-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	%{name}-data = %{EVRD}
 
 %description -n trinity-kfind
 kfind can be used to find files and directories on your
@@ -1733,7 +1733,7 @@ workstations.
 %package -n trinity-khelpcenter
 Summary:	Help center for TDE
 Group:		System/GUI/Other
-Requires:	%{name}-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	%{name}-data = %{EVRD}
 Requires:	htdig
 
 %description -n trinity-khelpcenter
@@ -1766,7 +1766,7 @@ documentation.
 %package -n trinity-kicker
 Summary:	Desktop panel for TDE
 Group:		System/GUI/Other
-Requires:	%{name}-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	%{name}-data = %{EVRD}
 
 %description -n trinity-kicker
 Kicker provides the TDE panel on you desktop. It can be used as a
@@ -1883,7 +1883,7 @@ functionality.
 %package -n trinity-kicker-devel
 Summary:	Development files for kicker
 Group:		Development/Libraries/Other
-Requires:	trinity-kicker = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-kicker = %{EVRD}
 %{?with_xtst:Requires: pkgconfig(xtst)}
 
 %description -n trinity-kicker-devel
@@ -1909,7 +1909,7 @@ This package contains the development files for kicker.
 %package -n trinity-klipper
 Summary:	Clipboard utility for Trinity
 Group:		System/GUI/Other
-Requires:	%{name}-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	%{name}-data = %{EVRD}
 
 %description -n trinity-klipper
 klipper provides standard clipboard functions (cut and paste, history
@@ -1942,7 +1942,7 @@ web browser if the clipboard contains a URL.
 %package -n trinity-kmenuedit
 Summary:	Menu editor for TDE
 Group:		System/GUI/Other
-Requires:	%{name}-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	%{name}-data = %{EVRD}
 
 %description -n trinity-kmenuedit
 The TDE menu editor allows you to make customisations to the TDE menu
@@ -1972,12 +1972,12 @@ structure.
 %package -n trinity-konqueror
 Summary:	TDE's advanced file manager, web browser and document viewer
 Group:		System/GUI/Other
-Requires:	%{name}-data = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	trinity-kcontrol = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	%{name}-tdeio-plugins = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	trinity-kdesktop = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	trinity-kfind = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	trinity-libkonq = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	%{name}-data = %{EVRD}
+Requires:	trinity-kcontrol = %{EVRD}
+Requires:	%{name}-tdeio-plugins = %{EVRD}
+Requires:	trinity-kdesktop = %{EVRD}
+Requires:	trinity-kfind = %{EVRD}
+Requires:	trinity-libkonq = %{EVRD}
 
 %description -n trinity-konqueror
 Konqueror is the file manager for the Trinity Desktop Environment.
@@ -2123,7 +2123,7 @@ fi
 %package -n trinity-konqueror-devel
 Summary:	Development files for konqueror
 Group:		Development/Libraries/Other
-Requires:	trinity-konqueror = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-konqueror = %{EVRD}
 
 %description -n trinity-konqueror-devel
 This package contains the development files for konqueror.
@@ -2140,7 +2140,7 @@ This package contains the development files for konqueror.
 %package -n trinity-konqueror-nsplugins
 Summary:	Netscape plugin support for Konqueror
 Group:		System/GUI/Other
-Requires:	trinity-konqueror = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-konqueror = %{EVRD}
 
 %description -n trinity-konqueror-nsplugins
 This package includes support for Netscape plugins in Konqueror.
@@ -2161,7 +2161,7 @@ This package includes support for Netscape plugins in Konqueror.
 %package -n trinity-konsole
 Summary:	X terminal emulator for TDE
 Group:		System/GUI/Other
-Requires:	%{name}-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	%{name}-data = %{EVRD}
 
 %description -n trinity-konsole
 Konsole is an X terminal emulation which provides a command-line interface
@@ -2215,7 +2215,7 @@ Using Konsole, a user can open:
 %package -n trinity-kpager
 Summary:	Desktop pager for TDE
 Group:		System/GUI/Other
-Requires:	%{name}-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	%{name}-data = %{EVRD}
 
 %description -n trinity-kpager
 This package contains TDE's desktop pager, which displays your virtual
@@ -2236,7 +2236,7 @@ applications. It is used to switch between applications or desktops.
 %package -n trinity-kpersonalizer
 Summary:	Installation personalizer for TDE
 Group:		System/GUI/Other
-Requires:	%{name}-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	%{name}-data = %{EVRD}
 
 %description -n trinity-kpersonalizer
 TDE Personalizer is the application that configures the TDE desktop for you.
@@ -2258,8 +2258,8 @@ automatically started. KPersonalizer can also be called later.
 %package -n trinity-ksmserver
 Summary:	Session manager for TDE
 Group:		System/GUI/Other
-Requires:	%{name}-data = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	trinity-twin = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	%{name}-data = %{EVRD}
+Requires:	trinity-twin = %{EVRD}
 Requires:	xmessage
 Requires:	xprop
 
@@ -2297,7 +2297,7 @@ TDE will start, but many good defaults will not be set.
 %package -n trinity-ksplash
 Summary:	The TDE splash screen
 Group:		System/GUI/Other
-Requires:	%{name}-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	%{name}-data = %{EVRD}
 
 %description -n trinity-ksplash
 This package includes the TDE Splash screen, which is seen when
@@ -2333,7 +2333,7 @@ a TDE session is launched.
 %package -n trinity-ksplash-devel
 Summary:	Development files for ksplash
 Group:		Development/Libraries/Other
-Requires:	trinity-ksplash = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-ksplash = %{EVRD}
 
 %description -n trinity-ksplash-devel
 This package contains the development files for ksplash.
@@ -2349,8 +2349,8 @@ This package contains the development files for ksplash.
 %package -n trinity-ksysguard
 Summary:	System guard for TDE
 Group:		System/GUI/Other
-Requires:	%{name}-data = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	trinity-ksysguardd = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	%{name}-data = %{EVRD}
+Requires:	trinity-ksysguardd = %{EVRD}
 
 %description -n trinity-ksysguard
 TDE System Guard allows you to monitor various statistics about your
@@ -2375,7 +2375,7 @@ computer.
 %package -n trinity-ksysguard-devel
 Summary:	Development files for ksysguard
 Group:		Development/Libraries/Other
-Requires:	trinity-ksysguard = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-ksysguard = %{EVRD}
 
 %description -n trinity-ksysguard-devel
 This package contains the development files for ksysguard.
@@ -2391,7 +2391,7 @@ This package contains the development files for ksysguard.
 %package -n trinity-ksysguardd
 Summary:	System guard daemon for TDE
 Group:		System/GUI/Other
-Requires:	%{name}-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	%{name}-data = %{EVRD}
 
 %description -n trinity-ksysguardd
 TDE System Guard Daemon is the daemon part of ksysguard. The daemon can
@@ -2408,7 +2408,7 @@ to monitor it through the daemon running there.
 %package -n trinity-ktip
 Summary:	Useful tips for TDE
 Group:		System/GUI/Other
-Requires:	%{name}-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	%{name}-data = %{EVRD}
 
 %description -n trinity-ktip
 ktip provides many useful tips on using TDE when you log in.
@@ -2427,7 +2427,7 @@ ktip provides many useful tips on using TDE when you log in.
 %package -n trinity-twin
 Summary:	The TDE window manager
 Group:		System/GUI/Other
-Requires:	%{name}-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	%{name}-data = %{EVRD}
 
 %description -n trinity-twin
 This package contains the default X window manager for TDE.
@@ -2481,7 +2481,7 @@ This package contains the default X window manager for TDE.
 %package -n trinity-twin-devel
 Summary:	Development files for twin
 Group:		Development/Libraries/Other
-Requires:	trinity-twin = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-twin = %{EVRD}
 
 %description -n trinity-twin-devel
 This package contains the development files for twin.
@@ -2548,7 +2548,7 @@ These libraries allow you to use TDE dialogs in native TQt3 applications.
 %package -n trinity-libkonq-devel
 Summary:	Development files for Konqueror's core libraries
 Group:		Development/Libraries/Other
-Requires:	trinity-libkonq = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-libkonq = %{EVRD}
 %{?with_xtst:Requires: pkgconfig(xtst)}
 
 %description -n trinity-libkonq-devel
@@ -2659,7 +2659,7 @@ fi
 %conf -p
 unset QTDIR QTINC QTLIB
 export PATH="%{tde_prefix}/bin:${PATH}"
-export PKG_CONFIG_PATH="%{tde_prefix}/%{_lib}/pkgconfig:${PKG_CONFIG_PATH}"
+export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:%{tde_prefix}/%{_lib}/pkgconfig"
 
 %install -p
 # Symlinks 'usb.ids' (Use system-provided version, not TDE provided version)
