@@ -86,9 +86,9 @@ BuildOption:  -DBUILD_TSAK=%{!?with_tsak:OFF}%{?with_tsak:ON}
 Requires:	distro-release-theme
 %define tde_bg /usr/share/wallpapers/default.png
 
-BuildRequires:	%{_lib}arts-devel >= %version
+BuildRequires:	trinity-arts-devel
 BuildRequires:	trinity-tdelibs-devel >= %version
-
+BuildRequires:  tqt3-dev-tools
 BuildRequires:	trinity-tde-cmake >= %version
 
 %{!?with_clang:BuildRequires:	gcc-c++}
