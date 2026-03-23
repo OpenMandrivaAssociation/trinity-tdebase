@@ -32,7 +32,7 @@
 
 Name:			trinity-%{tde_pkg}
 Version:		14.1.5
-Release:		6
+Release:		7
 Summary:		Trinity Base Programs
 Group:			System/GUI/Other
 URL:			http://www.trinitydesktop.org/
@@ -88,7 +88,6 @@ Requires:	distro-release-theme
 
 BuildRequires:	trinity-arts-devel
 BuildRequires:	trinity-tdelibs-devel >= %version
-BuildRequires:  tqt3-dev-tools
 BuildRequires:	trinity-tde-cmake >= %version
 
 %{!?with_clang:BuildRequires:	gcc-c++}
