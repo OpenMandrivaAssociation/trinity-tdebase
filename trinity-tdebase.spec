@@ -26,13 +26,13 @@
 %define _disable_rebuild_configure 1
 
 # fixes error: Empty %files file …/debugsourcefiles.list
-%define _debugsource_template %{nil}
+%undefine _debugsource_template
 
 %define tarball_name %{tde_pkg}-trinity
 
 Name:			trinity-%{tde_pkg}
-Version:		14.1.5
-Release:		7
+Version:		14.1.6
+Release:		1
 Summary:		Trinity Base Programs
 Group:			System/GUI/Other
 URL:			http://www.trinitydesktop.org/
@@ -86,9 +86,9 @@ BuildOption:  -DBUILD_TSAK=%{!?with_tsak:OFF}%{?with_tsak:ON}
 Requires:	distro-release-theme
 %define tde_bg /usr/share/wallpapers/default.png
 
-BuildRequires:	trinity-arts-devel
-BuildRequires:	trinity-tdelibs-devel >= %version
-BuildRequires:	trinity-tde-cmake >= %version
+BuildRequires:	trinity-arts-devel >= %{version}
+BuildRequires:	trinity-tdelibs-devel >= %{version}
+BuildRequires:	trinity-tde-cmake >= %{version}
 
 %{!?with_clang:BuildRequires:	gcc-c++}
 
